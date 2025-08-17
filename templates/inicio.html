@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi rincón de letras y té</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'css/inicio.css' %}" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Portada -->
+    <header class="hero text-center">
+        <div class="hero-text">
+            <h1 class="display-4">Mi rincón de letras y té</h1>
+            <p class="lead fst-italic">“A veces, leemos para saber que no estamos solos.” – William Nicholson</p>
+        </div>
+    </header>
+
+    <!-- Bienvenida -->
+    <section class="container text-center my-5">
+        <h2 class="mb-3">Bienvenid@ a tu espacio literario</h2>
+        <p class="text-muted">
+            Organiza tus lecturas, descubre nuevas historias y guarda cada frase que te acarició el alma.
+        </p>
+
+        <div class="mt-4 d-flex justify-content-center flex-wrap gap-3">
+            <a href="{% url 'biblioteca' %}" class="btn btn-outline-secondary btn-custom">Ver biblioteca</a>
+            <a href="{% url 'diario_lector' %}" class="btn btn-outline-primary btn-custom">Mi diario lector</a>
+            <a href="{% url 'recomendaciones' %}" class="btn btn-outline-success btn-custom">Recomendaciones</a>
+        </div>
+    </section>
+{% if user.is_authenticated %}
+    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar sesión</button>
+    </form>
+{% else %}
+    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">Iniciar sesión</a>
+{% endif %}
+
+    <!-- Footer -->
+    <footer class="text-center text-muted py-4">
+        <small>Creado con ☕ y 📚 por Paola Uribe • Proyecto de Título INACAP</small>
+    </footer>
+
+</body>
+</html>

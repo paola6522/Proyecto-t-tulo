@@ -1,0 +1,34 @@
+body {
+    background-color: #fdfaf6;
+    font-family: 'Georgia', serif;
+}
+
+.container {
+    margin-top: 3rem;
+}
+
+.book-card {
+    background-color: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.book-img {
+    max-width: 120px;
+    border-radius: 12px;
+}
+
+.btn-pink {
+    background-color: #f4a7b9;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-weight: bold;
+}
+.btn-pink:hover {
+    background-color: #e295ab;
+}
+

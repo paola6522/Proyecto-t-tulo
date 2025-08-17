@@ -1,0 +1,60 @@
+body {
+    background-color: #faf9f6;
+    font-family: 'Georgia', serif;
+}
+
+.container {
+    margin-top: 3rem;
+}
+
+.book-card {
+    background-color: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.book-img {
+    max-height: 180px;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+}
+
+.btn-custom {
+    border-radius: 30px;
+}
+.btn-rosa {
+  background-color: #f8bbd0; /* Rosa pastel */
+  color: #6a1b9a; /* Texto morado oscuro */
+  border: none;
+}
+
+.btn-rosa:hover {
+  background-color: #f48fb1;
+  color: white;
+}
+
+.btn-rosa-claro {
+  background-color: #fce4ec; /* Rosa muy claro */
+  color: #ad1457;
+  border: none;
+}
+
+.btn-rosa-claro:hover {
+  background-color: #f8bbd0;
+  color: white;
+}
+
+.btn-rosa-fuerte {
+  background-color: #f06292; /* Rosa fuerte */
+  color: white;
+  border: none;
+}
+
+.btn-rosa-fuerte:hover {
+  background-color: #ec407a;
+  color: white;
+}
+

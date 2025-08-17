@@ -1,0 +1,29 @@
+body {
+    background-color: #fdfaf6;
+    font-family: 'Georgia', serif;
+}
+
+.form-container {
+    background-color: #fff9f5;
+    border-radius: 16px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+h2 {
+    font-weight: bold;
+    color: #6c4b5e;
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background-color: #e3a6b5;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 30px;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #d28fa4;
+}

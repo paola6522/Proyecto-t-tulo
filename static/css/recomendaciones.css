@@ -1,0 +1,15 @@
+body {
+    background-color: #fdfaf6;
+    font-family: 'Georgia', serif;
+    color: #4b3832;
+}
+
+.card h5 {
+    color: #6a4e42;
+    font-weight: bold;
+}
+
+.card {
+    background-color: #fff8f0;
+}
+

@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mi rincón de letras y té</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
+        <a class="navbar-brand fw-bold" href="{% url 'inicio' %}">📚 Letras & Té</a>
+
+        <div class="ms-auto">
+            {% if user.is_authenticated %}
+                <a href="{% url 'biblioteca' %}" class="btn btn-outline-secondary me-2 btn-sm">Biblioteca</a>
+                <a href="{% url 'diario_lector' %}" class="btn btn-outline-secondary me-2 btn-sm">Mi Diario</a>
+                <a href="{% url 'recomendaciones' %}" class="btn btn-outline-secondary me-2 btn-sm">Recomendaciones</a>
+                <a href="{% url 'logout' %}" class="btn btn-outline-danger btn-sm">Cerrar sesión</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline-primary me-2 btn-sm">Iniciar sesión</a>
+                <a href="{% url 'registro' %}" class="btn btn-outline-success btn-sm">Registrarse</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Contenido -->
+    <div class="container my-4">
+        {% block content %}
+        <!-- Aquí irá el contenido de cada página -->
+        {% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-muted py-3">
+        <small>Creado con ☕ y 📚 por Paola Uribe — Proyecto de Título INACAP</small>
+    </footer>
+</body>
+</html>
