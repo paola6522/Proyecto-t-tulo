@@ -42,6 +42,7 @@ class DiarioLector(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     libro_leido = models.ForeignKey(LibroLeido, on_delete=models.CASCADE)
     fecha = models.DateField(auto_now_add=True)
+    puntuacion = models.IntegerField(default=0) #Puntuación del libro de 0 a 5
     frase_iconica = models.TextField(blank=True)
     punto_clave = models.TextField(blank=True)
     nota_personal = models.TextField(blank=True)

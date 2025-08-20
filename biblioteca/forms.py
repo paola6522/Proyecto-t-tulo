@@ -63,12 +63,13 @@ class LibroForm(forms.ModelForm):
 class DiarioLectorForm(forms.ModelForm):
     class Meta:
         model = DiarioLector
-        fields = ['libro_leido', 'frase_iconica', 'punto_clave', 'nota_personal']
+        fields = ['libro_leido', 'frase_iconica', 'punto_clave', 'nota_personal', 'puntuacion']
         widgets = {
             'frase_iconica': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'punto_clave': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'nota_personal': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'libro_leido': forms.Select(attrs={'class': 'form-select'}),
+            'puntuacion': forms.HiddenInput(),
         }
 
 
