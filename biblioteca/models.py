@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+# Estados posibles
 ESTADO_LIBRO = [
     ('pendiente', 'Pendiente'),
     ('leyendo', 'Leyendo'),
@@ -8,19 +9,47 @@ ESTADO_LIBRO = [
     ('abandonado', 'Abandonado'),
 ]
 
+CATEGORIAS_CHOICES = [
+    ('romance', 'Romance'),
+    ('fantasia', 'Fantasía'),
+    ('ciencia_ficcion', 'Ciencia Ficción'),
+    ('aventura', 'Aventura'),
+    ('clasico', 'Clásico'),
+    ('misterio', 'Misterio'),
+    ('poesia', 'Poesía'),
+    ('biografia', 'Biografía'),
+    ('terror', 'Terror'),
+    ('historia', 'Historia'),
+    ('filosofia', 'Filosofía'),
+    ('autoayuda', 'Autoayuda'),
+    ('juvenil', 'Juvenil'),
+    ('infantil', 'Infantil'),
+    ('ensayo', 'Ensayo'),
+    ('drama', 'Drama'),
+]
+
+# Nuevo modelo de categoría (géneros)
+class Categoria(models.Model):
+    nombre = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.nombre
+
+# Modelo Libro con categorías múltiples
 class Libro(models.Model):
     titulo = models.CharField(max_length=200)
     autor = models.CharField(max_length=100)        # Agregado
-    categoria = models.CharField(max_length=100)    # Agregado
+    categoria = models.ManyToManyField(Categoria)    # Agregado
 
     def __str__(self):
         return self.titulo
-
+    
+# Modelo de libro leído (también con múltiples categorías)
 class LibroLeido(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=200, default="Sin título") 
-    autor = models.CharField(max_length=100, default="Desconocido")  # o ForeignKey si tienes modelo Autor
-    categoria = models.CharField(max_length=100, default="Sin categoría")  # o ManyToManyField si quieres varias
+    autor = models.CharField(max_length=100, default="Desconocido")  
+    categoria = models.ManyToManyField(Categoria, blank=True)  
     resumen = models.TextField()
     estado = models.CharField(max_length=20, choices=[
         ('pendiente', 'Pendiente'),
@@ -37,7 +66,7 @@ class LibroLeido(models.Model):
     def __str__(self):
         return self.titulo
 
-
+# Diario lector
 class DiarioLector(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     libro_leido = models.ForeignKey(LibroLeido, on_delete=models.CASCADE)

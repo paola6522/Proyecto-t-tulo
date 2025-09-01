@@ -1,10 +1,5 @@
-from django.contrib import admin
-from biblioteca.models import Libro, Categoria, LibroLeido, DiarioLector
-#Register your models here.
-admin.site.register(Categoria)
-admin.site.register(Libro)
-admin.site.register(LibroLeido)
-admin.site.register(DiarioLector)
+# biblioteca/poblar_categorias.py
+from .models import Categoria
 
 generos = [
     "Acción", "Aventura", "Comedia", "Drama", "Romance", "Fantasía",
@@ -13,7 +8,9 @@ generos = [
     "Escolar", "Reencarnación", "Vida cotidiana", "Mitología", 
     "Viajes en el tiempo", "LGTB+", "Realismo mágico", "Juvenil",
     "Adulto", "Cuentos", "Manga/Manhwa", "Isekai", "Ensayo"
-    ]
+]
 
-for genero in generos:
-    Categoria.objects.get_or_create(nombre=genero)
+def poblar():
+    for genero in generos:
+        Categoria.objects.get_or_create(nombre=genero)
+    print("Categorías pobladas correctamente.")

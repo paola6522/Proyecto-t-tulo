@@ -40,7 +40,7 @@ class LibroLeidoForm(forms.ModelForm):
         widgets = {
             'titulo': forms.TextInput(attrs={'class': 'form-control rounded-3'}),
             'autor': forms.TextInput(attrs={'class': 'form-control rounded-3'}),
-            'categoria': forms.TextInput(attrs={'class': 'form-control rounded-3'}),
+            'categoria': forms.SelectMultiple(attrs={'class': 'form-select'}),
             'resumen': forms.Textarea(attrs={'class': 'form-control rounded-3', 'rows': 4}),
             'estado': forms.Select(attrs={'class': 'form-select rounded-3'}),
             'fecha_inicio': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
@@ -57,7 +57,7 @@ class LibroForm(forms.ModelForm):
         widgets = {
             'titulo': forms.TextInput(attrs={'class': 'form-control'}),
             'autor': forms.TextInput(attrs={'class': 'form-control'}),
-            'categoria': forms.TextInput(attrs={'class': 'form-control'}),
+            'categoria': forms.SelectMultiple(attrs={'class': 'form-select'}),
         }
 
 class DiarioLectorForm(forms.ModelForm):

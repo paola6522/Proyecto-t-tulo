@@ -17,7 +17,7 @@ urlpatterns = [
     path('agregar-entrada/', views.agregar_entrada, name='agregar_entrada'),
     path('eliminar-entrada/<int:pk>/', views.eliminar_entrada, name='eliminar_entrada'),
     path('editar-entrada/<int:pk>/', views.editar_entrada, name='editar_entrada'),
-    path('agregar-entrada/', views.agregar_entrada, name='agregar_diario'),
+    path('agregar-entrada/', views.agregar_entrada, name='agregar_diario'),#?
     path('logout/', LogoutView.as_view(next_page='inicio'), name='logout'),
     path('registro/', registro_view, name='registro'),
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),

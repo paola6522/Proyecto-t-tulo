@@ -36,6 +36,7 @@ def agregar_libro_leido(request):
         form = LibroLeidoForm()
     return render(request, 'biblioteca/agregar_libro_leido.html', {'form': form})
 
+
 @login_required
 def ver_libro(request, pk):
     libro = get_object_or_404(LibroLeido, pk=pk)
@@ -86,14 +87,16 @@ def agregar_entrada(request):
 
 @login_required
 def eliminar_entrada(request, pk):
-    entrada = get_object_or_404(DiarioLector, pk=pk)
-    entrada.delete()
-    messages.success(request, 'Entrada eliminada del diario.')
-    return redirect('diario_lector')
+    entrada = get_object_or_404(DiarioLector, pk=pk, usuario=request.user)
+    if request.method == 'POST':
+        entrada.delete()
+        messages.success(request, 'Entrada eliminada del diario.')
+        return redirect('diario_lector')
+    return render(request, 'biblioteca/eliminar_entrada.html', {'entrada': entrada})
 
 @login_required
 def editar_entrada(request, pk):
-    entrada = get_object_or_404(DiarioLector, pk=pk)
+    entrada = get_object_or_404(DiarioLector, pk=pk, usuario=request.user)
 
     if request.method == 'POST':
         form = DiarioLectorForm(request.POST, instance=entrada)
