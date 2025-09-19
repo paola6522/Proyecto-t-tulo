@@ -14,11 +14,12 @@ urlpatterns = [
     path('editar-libro/<int:pk>/', views.editar_libro, name='editar_libro'),
     path('eliminar/<int:pk>/', views.eliminar_libro, name='eliminar_libro'),
     path('biblioteca/agregar/', views.agregar_libro_leido, name='agregar_libro'),
-    path('agregar-entrada/', views.agregar_entrada, name='agregar_entrada'),
+    path('agregar-entrada/', views.agregar_entrada, name='agregar_entrada'),# Duplicada hay que verificar que es lo quehace si se borra se cae la pagina
     path('eliminar-entrada/<int:pk>/', views.eliminar_entrada, name='eliminar_entrada'),
     path('editar-entrada/<int:pk>/', views.editar_entrada, name='editar_entrada'),
-    path('agregar-entrada/', views.agregar_entrada, name='agregar_diario'),#?
+    path('agregar-entrada/', views.agregar_entrada, name='agregar_diario'),# Duplicada hay que verificar que es lo quehace si se borra se cae la pagina
     path('logout/', LogoutView.as_view(next_page='inicio'), name='logout'),
     path('registro/', registro_view, name='registro'),
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('estadisticas/', views.estadisticas, name='estadisticas'),
 ]

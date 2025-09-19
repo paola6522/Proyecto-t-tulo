@@ -9,25 +9,6 @@ ESTADO_LIBRO = [
     ('abandonado', 'Abandonado'),
 ]
 
-CATEGORIAS_CHOICES = [
-    ('romance', 'Romance'),
-    ('fantasia', 'Fantasía'),
-    ('ciencia_ficcion', 'Ciencia Ficción'),
-    ('aventura', 'Aventura'),
-    ('clasico', 'Clásico'),
-    ('misterio', 'Misterio'),
-    ('poesia', 'Poesía'),
-    ('biografia', 'Biografía'),
-    ('terror', 'Terror'),
-    ('historia', 'Historia'),
-    ('filosofia', 'Filosofía'),
-    ('autoayuda', 'Autoayuda'),
-    ('juvenil', 'Juvenil'),
-    ('infantil', 'Infantil'),
-    ('ensayo', 'Ensayo'),
-    ('drama', 'Drama'),
-]
-
 # Nuevo modelo de categoría (géneros)
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100, unique=True)

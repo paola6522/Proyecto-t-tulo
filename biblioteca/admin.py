@@ -5,15 +5,3 @@ admin.site.register(Categoria)
 admin.site.register(Libro)
 admin.site.register(LibroLeido)
 admin.site.register(DiarioLector)
-
-generos = [
-    "Acción", "Aventura", "Comedia", "Drama", "Romance", "Fantasía",
-    "Ciencia Ficción", "Misterio", "Thriller", "Horror", "Histórico",
-    "Bélico", "Psicológico", "Magia", "Sobrenatural", "Distopía",
-    "Escolar", "Reencarnación", "Vida cotidiana", "Mitología", 
-    "Viajes en el tiempo", "LGTB+", "Realismo mágico", "Juvenil",
-    "Adulto", "Cuentos", "Manga/Manhwa", "Isekai", "Ensayo"
-    ]
-
-for genero in generos:
-    Categoria.objects.get_or_create(nombre=genero)

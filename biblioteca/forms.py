@@ -57,7 +57,7 @@ class LibroForm(forms.ModelForm):
         widgets = {
             'titulo': forms.TextInput(attrs={'class': 'form-control'}),
             'autor': forms.TextInput(attrs={'class': 'form-control'}),
-            'categoria': forms.SelectMultiple(attrs={'class': 'form-select'}),
+            'categoria': forms.SelectMultiple(attrs={'class': 'form-select'}),  # Permite seleccionar múltiples categorías
         }
 
 class DiarioLectorForm(forms.ModelForm):

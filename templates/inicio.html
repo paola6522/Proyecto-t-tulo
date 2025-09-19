@@ -4,10 +4,38 @@
 <head>
     <meta charset="UTF-8">
     <title>Mi rincón de letras y té</title>
+    
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- CSS personalizado -->
     <link href="{% static 'css/inicio.css' %}" rel="stylesheet">
+
 </head>
 <body>
+
+    <!-- Ícono de usuario (arriba a la derecha) -->
+    <div class="position-absolute top-0 end-0 p-3">
+        {% if user.is_authenticated %}
+        <div class="dropdown">
+            <button class="btn btn-light border dropdown-toggle rounded-pill d-flex align-items-center gap-2 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle"></i>
+                {{ user.username }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                <li><a class="dropdown-item" href="{% url 'estadisticas' %}">📊 Ver estadísticas</a></li>
+                <li>
+                    <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="dropdown-item">⏻ Cerrar sesión</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn btn-outline-primary rounded-pill">Iniciar sesión</a>
+        {% endif %}
+    </div>
 
     <!-- Portada -->
     <header class="hero text-center">
@@ -30,19 +58,13 @@
             <a href="{% url 'recomendaciones' %}" class="btn btn-outline-success btn-custom">Recomendaciones</a>
         </div>
     </section>
-{% if user.is_authenticated %}
-    <form method="post" action="{% url 'logout' %}" style="display: inline;">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar sesión</button>
-    </form>
-{% else %}
-    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">Iniciar sesión</a>
-{% endif %}
 
     <!-- Footer -->
     <footer class="text-center text-muted py-4">
         <small>Creado con ☕ y 📚 por Paola Uribe - Mario Prado - Brigitte Murillo • Proyecto de Título INACAP</small>
     </footer>
 
+    <!-- Bootstrap JS para el dropdown -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -155,3 +155,7 @@ def cerrar_sesion(request):
     logout(request)
     messages.info(request, "Has cerrado sesión correctamente.")
     return redirect('inicio')
+
+@login_required
+def estadisticas(request):
+    return render(request, 'biblioteca/estadisticas.html')
