@@ -1,8 +1,10 @@
+# Importación de los módulos necesarios para formularios
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from .models import LibroLeido, Libro, DiarioLector
+from django.contrib.auth.forms import UserCreationForm # Formulario base para registrar usuarios
+from django.contrib.auth.models import User # Modelo de usuario de Django
+from .models import LibroLeido, Libro, DiarioLector # Modelos creados en tu app
 
+# Lista de posibles estados que un libro puede tener
 ESTADOS = [
     ('pendiente', 'Pendiente'),
     ('iniciado', 'Iniciado'),
@@ -11,15 +13,17 @@ ESTADOS = [
     ('abandonado', 'Abandonado'),
 ]
 
+#FORMULARIO DE REGISTRO DE USUARIO
 class RegistroUsuarioForm(UserCreationForm):
+    # Campo extra para capturar el correo electrónico del usuario
     email = forms.EmailField(
         required=True,
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Correo electrónico'})
     )
 
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        model = User # Se utiliza el modelo de usuario de Django
+        fields = ['username', 'email', 'password1', 'password2'] # Campos visibles en el formulario
         labels = {
             'username': 'Nombre de usuario',
             'email': 'Correo electrónico',
@@ -29,37 +33,40 @@ class RegistroUsuarioForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Se aplican clases CSS Bootstrap a todos los campos para mejorar la estética
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['placeholder'] = field.label
 
+#FORMULARIO PARA REGISTRAR UN LIBRO LEÍDO
 class LibroLeidoForm(forms.ModelForm):
     class Meta:
-        model = LibroLeido
-        exclude = ['usuario']
+        model = LibroLeido # Modelo correspondiente
+        exclude = ['usuario'] # El usuario se asigna automáticamente, no se muestra en el formulario
         widgets = {
             'titulo': forms.TextInput(attrs={'class': 'form-control rounded-3'}),
             'autor': forms.TextInput(attrs={'class': 'form-control rounded-3'}),
-            'categoria': forms.SelectMultiple(attrs={'class': 'form-select'}),
-            'resumen': forms.Textarea(attrs={'class': 'form-control rounded-3', 'rows': 4}),
-            'estado': forms.Select(attrs={'class': 'form-select rounded-3'}),
-            'fecha_inicio': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'fecha_fin': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'pdf': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-            'link': forms.URLInput(attrs={'class': 'form-control rounded-3'}),
+            'categoria': forms.SelectMultiple(attrs={'class': 'form-select'}), # Selección múltiple de géneros
+            'resumen': forms.Textarea(attrs={'class': 'form-control rounded-3', 'rows': 4}), # Resumen del libro
+            'estado': forms.Select(attrs={'class': 'form-select rounded-3'}), # Estado del libro (iniciado, finalizado, etc.)
+            'fecha_inicio': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}), # Fecha de inicio
+            'fecha_fin': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}), # Fecha de fin
+            'pdf': forms.ClearableFileInput(attrs={'class': 'form-control'}), # Opción para subir archivo
+            'link': forms.URLInput(attrs={'class': 'form-control rounded-3'}), # Link externo del libro
         }
 
-
+#FORMULARIO PARA AÑADIR LIBROS A LA BIBLIOTECA
 class LibroForm(forms.ModelForm):
     class Meta:
-        model = Libro
-        fields = ['titulo', 'autor', 'categoria']
+        model = Libro # Modelo correspondiente
+        fields = ['titulo', 'autor', 'categoria'] # Campos del formulario
         widgets = {
             'titulo': forms.TextInput(attrs={'class': 'form-control'}),
             'autor': forms.TextInput(attrs={'class': 'form-control'}),
             'categoria': forms.SelectMultiple(attrs={'class': 'form-select'}),  # Permite seleccionar múltiples categorías
         }
 
+#FORMULARIO PARA EL DIARIO LECTOR 
 class DiarioLectorForm(forms.ModelForm):
     class Meta:
         model = DiarioLector
@@ -72,7 +79,14 @@ class DiarioLectorForm(forms.ModelForm):
             'puntuacion': forms.HiddenInput(),
         }
 
+    def __init__(self, *args, **kwargs):
+        usuario = kwargs.pop('usuario', None)  # Sacamos el usuario desde la vista
+        super().__init__(*args, **kwargs)
+        if usuario:
+            self.fields['libro_leido'].queryset = LibroLeido.objects.filter(usuario=usuario)
 
+
+#FORMULARIO PARA EDITAR UN LIBRO LEÍDO
 class EditarLibroForm(forms.ModelForm):
     class Meta:
         model = LibroLeido

@@ -1,7 +1,151 @@
-{% extends 'base.html' %}
-{% block content %}
-<div class="container mt-5">
-    <h2 class="text-center">📊 Estadísticas de lectura</h2>
-    <p class="text-muted text-center">Aquí podrás ver el resumen de tus libros leídos, favoritos, y más.</p>
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Estadísticas lectoras</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'css/inicio.css' %}" rel="stylesheet">
+</head>
+<body>
+
+<!-- 🌸 Botón de regreso -->
+<div class="d-flex justify-content-end me-4 mt-3">
+    <a href="{% url 'inicio' %}" class="btn btn-outline-primary rounded-pill">🌸 Volver al inicio</a>
 </div>
-{% endblock %}
+
+<!-- 📈 Título principal -->
+<div class="container mt-5 text-center">
+    <h2 class="text-center">📊 Estadísticas de tu lectura</h2>
+    <p class="text-muted">Visualiza tu progreso y hábitos mes a mes.</p>
+
+    <!-- 🟠 Gráfico de estado -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6">
+            <h5>📘 Libros por estado</h5>
+            <canvas id="graficoEstado" style="max-width: 100%; height: auto;"></canvas>
+        </div>
+    </div>
+
+    <!-- 📆 Gráfico de libros por mes -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-10">
+            <h5>📆 Evolución mensual por estado</h5>
+            <canvas id="graficoMes" style="max-width: 100%; height: auto;"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+
+<!-- 📘 Gráfico por estado -->
+<script defer>
+document.addEventListener('DOMContentLoaded', function () {
+    const ctxEstado = document.getElementById('graficoEstado').getContext('2d');
+    new Chart(ctxEstado, {
+        type: 'pie',
+        data: {
+            labels: {{ etiquetas|safe }},
+            datasets: [{
+                label: 'Libros por estado',
+                data: {{ cantidades|safe }},
+                backgroundColor: ['#ffccdc', '#b8b8ff', '#a0e7e5', '#fbe7c6', '#d5aaff'], // pastel cozy
+                borderColor: '#ffffff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: {
+                            family: 'Arial',
+                            size: 14
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // 📆 Gráfico de línea por mes
+    const ctxMes = document.getElementById('graficoMes').getContext('2d');
+    const meses = {{ meses|safe }};
+    const datosLinea = {{ datos_linea|safe }};
+
+    const datasets = [];
+
+    if (datosLinea.iniciado) {
+        datasets.push({
+            label: 'Iniciado',
+            data: datosLinea.iniciado,
+            borderColor: '#ffb6b9',
+            backgroundColor: '#ffb6b9',
+            tension: 0.3,
+        });
+    }
+
+    if (datosLinea.en_curso) {
+        datasets.push({
+            label: 'En curso',
+            data: datosLinea.en_curso,
+            borderColor: '#a0e7e5',
+            backgroundColor: '#a0e7e5',
+            tension: 0.3,
+        });
+    }
+
+    if (datosLinea.finalizado) {
+        datasets.push({
+            label: 'Finalizado',
+            data: datosLinea.finalizado,
+            borderColor: '#b8b8ff',
+            backgroundColor: '#b8b8ff',
+            tension: 0.3,
+        });
+    }
+
+    new Chart(ctxMes, {
+        type: 'line',
+        data: {
+            labels: meses,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Mes'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    stepSize: 1,
+                    title: {
+                        display: true,
+                        text: 'Cantidad'
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+
+</body>
+</html>
+
+
+
+
+
+

@@ -8,6 +8,12 @@ from django.contrib.auth import authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.db.models import Count
+from collections import defaultdict
+from datetime import datetime, date
+from dateutil.relativedelta import relativedelta
+import json
+
 
 
 import os
@@ -74,7 +80,7 @@ def diario_lector(request):
 def agregar_entrada(request):
     libro_id = request.GET.get('libro_id')
     if request.method == 'POST':
-        form = DiarioLectorForm(request.POST, request.FILES)
+        form = DiarioLectorForm(request.POST, request.FILES, usuario=request.user)
         if form.is_valid():
             entrada = form.save(commit=False)
             entrada.usuario = request.user  # si tienes campo usuario
@@ -82,7 +88,7 @@ def agregar_entrada(request):
             messages.success(request, 'Entrada agregada al diario lector.')
             return redirect('diario_lector')
     else:
-        form = DiarioLectorForm(initial={'libro_leido': libro_id})
+        form = DiarioLectorForm(initial={'libro_leido': libro_id}, usuario=request.user)
     return render(request, 'biblioteca/agregar_diario.html', {'form': form})
 
 @login_required
@@ -158,4 +164,54 @@ def cerrar_sesion(request):
 
 @login_required
 def estadisticas(request):
-    return render(request, 'biblioteca/estadisticas.html')
+    usuario = request.user
+
+    # Gráfico de pastel por estado
+    resumen = LibroLeido.objects.filter(usuario=usuario) \
+        .values('estado') \
+        .annotate(total=Count('estado'))
+
+    etiquetas = [item['estado'] for item in resumen]
+    cantidades = [item['total'] for item in resumen]
+
+    # Gráfico de líneas por mes y estado
+    libros = LibroLeido.objects.filter(usuario=usuario, fecha_inicio__isnull=False)
+
+    meses_set = set()
+    estado_mensual = defaultdict(lambda: defaultdict(int))  # estado_mensual[estado][mes] = cantidad
+
+    for libro in libros:
+        estado = libro.estado
+        inicio = libro.fecha_inicio
+        fin = libro.fecha_fin if libro.fecha_fin else date.today()
+
+        # Para libros iniciados o en curso: contar mes a mes
+        if estado in ['iniciado', 'en_curso']:
+            mes_actual = inicio.replace(day=1)
+            while mes_actual <= fin:
+                mes_str = mes_actual.strftime('%b %Y')
+                estado_mensual[estado][mes_str] += 1
+                meses_set.add(mes_str)
+                mes_actual += relativedelta(months=1)
+
+        # Para finalizados: contar solo en mes de inicio
+        elif estado == 'finalizado':
+            mes_str = inicio.strftime('%b %Y')
+            estado_mensual[estado][mes_str] += 1
+            meses_set.add(mes_str)
+
+    # Ordenar meses cronológicamente
+    meses_ordenados = sorted(meses_set, key=lambda m: datetime.strptime(m, '%b %Y'))
+
+    # Convertir a JSON
+    datos_linea = {
+        estado: [estado_mensual[estado].get(mes, 0) for mes in meses_ordenados]
+        for estado in ['iniciado', 'en_curso', 'finalizado']
+    }
+
+    return render(request, 'biblioteca/estadisticas.html', {
+        'etiquetas': etiquetas,
+        'cantidades': cantidades,
+        'meses': json.dumps(meses_ordenados),
+        'datos_linea': json.dumps(datos_linea),
+    })
