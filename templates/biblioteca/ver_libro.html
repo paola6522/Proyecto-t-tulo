@@ -14,8 +14,22 @@
 
         <h2>{{ libro.titulo }}</h2>
         <p><strong>Autor:</strong> {{ libro.autor }}</p>
-        <p><strong>Categoría:</strong> {{ libro.categoria }}</p>
-        <p><strong>Resumen:</strong> {{ libro.descripcion|default:"(Sin descripción)" }}</p>
+        <p><strong>Categoría:</strong> 
+            {% if libro.categoria.all %}
+                {% for cat in libro.categoria.all %}
+                    {{ cat.nombre }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            {% else %}
+                (Sin categoría)
+            {% endif %}
+        </p>
+        <p><strong>Resumen:</strong> 
+            {% if libro.resumen %}
+                {{ libro.resumen }}
+            {% else %}
+                (Sin descripción)
+        </p>
+{% endif %}
 
         {% if libro.pdf %}
             <div class="mb-3">
