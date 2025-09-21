@@ -20,7 +20,7 @@ class Categoria(models.Model):
 
 # MODELO LIBRO (CATÁLOGO GENERAL DE LIBROS)
 class Libro(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE) # Usuario que añadió el libro
     titulo = models.CharField(max_length=200) # Título del libro
     autor = models.CharField(max_length=100)   # Autor del libro
     categoria = models.ManyToManyField(Categoria) # Relación muchos a muchos con categorías

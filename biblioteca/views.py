@@ -34,7 +34,7 @@ def agregar_libro_leido(request):
         form = LibroLeidoForm(request.POST, request.FILES)
         if form.is_valid():
             libro = form.save(commit=False)
-            libro.usuario = request.user  # ✅ Asignar usuario logueado
+            libro.usuario = request.user  # Asignar usuario logueado
             libro.save()
             form.save_m2m()
             messages.success(request, '¡Libro registrado exitosamente!')
