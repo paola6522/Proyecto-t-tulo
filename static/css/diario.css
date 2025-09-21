@@ -1,34 +1,61 @@
-body {
-    background-color: #fdfaf6;
-    font-family: 'Georgia', serif;
+/* Fondo cálido */
+body.bg-light-pink {
+  background-color: #fff8f6;
 }
 
-.container {
-    margin-top: 3rem;
+/* Títulos principales */
+.title-cozy {
+  color: #d28cb0; /* Rosa pastel lavanda */
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-weight: bold;
 }
 
-.book-card {
-    background-color: white;
-    border-radius: 20px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+/* Tarjetas */
+.cozy-card {
+  background-color: #fdfaf5;
+  border: 2px solid #f5d0d0;
+  border-radius: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.cozy-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(210, 140, 176, 0.3);
+}
+.equal-card {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.book-img {
-    max-width: 120px;
-    border-radius: 12px;
+/* Texto */
+.text-cozy {
+  color: #a65c7c;
 }
 
-.btn-pink {
-    background-color: #f4a7b9;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 10px 20px;
-    font-weight: bold;
+/* Botones */
+.cozy-btn {
+  background-color: #f5d0d0;
+  border: none;
+  color: #5c3b46;
+  font-weight: bold;
+  border-radius: 50px;
+  padding: 8px 20px;
+  transition: background-color 0.2s ease;
 }
-.btn-pink:hover {
-    background-color: #e295ab;
+.cozy-btn:hover {
+  background-color: #eab8b8;
+  color: #4a2f37;
+}
+
+/* Modal */
+.cozy-modal {
+  background-color: #fff8f6;
+  border-radius: 1rem;
+  padding: 20px;
+}
+.cozy-modal .modal-title {
+  font-size: 1.5rem;
+  color: #a65c7c;
 }
 
