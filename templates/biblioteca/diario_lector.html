@@ -15,8 +15,14 @@
 <div class="container my-4">
     <h2 class="text-center mb-4 title-cozy">📝🌷 Mi Diario Lector</h2>
 
+    <!-- Buscador -->
+    <form class="d-flex mb-4 justify-content-center" method="get">
+        <input class="form-control me-2 w-50" type="search" name="q" placeholder="Buscar por título" aria-label="Buscar">
+        <button class="btn btn-primary rounded-pill px-4 py-2" type="submit">Buscar</button>
+    </form>
+
     <div class="text-center mb-4">
-        <a href="{% url 'agregar_entrada' %}" class="btn btn-outline-success btn-custom cozy-btn">+ Agregar entrada</a>
+        <a href="{% url 'agregar_entrada' %}" class="btn btn-outline-success rounded-pill px-4 py-2">+ Agregar entrada</a>
     </div>
 
     <div class="row">
@@ -26,12 +32,11 @@
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title text-cozy">{{ entrada.libro_leido.titulo }}</h5>
                     <p class="card-text"><strong>Leído el:</strong> {{ entrada.libro_leido.fecha_fin }}</p>
-                    <p class="card-text"><strong>Frase icónica:</strong> {{ entrada.frase_iconica|truncatechars:80 }}</p>
                     <p class="card-text"><strong>Puntuación:</strong> {{ entrada.puntuacion }} ⭐</p>
 
                     <!-- Botón para abrir el modal -->
                     <button type="button"
-                            class="btn btn-outline-primary mt-auto cozy-btn"
+                            class="btn btn-outline-secondary rounded-pill px-4 py-2"
                             data-bs-toggle="modal"
                             data-bs-target="#modalEntrada{{ entrada.id }}">
                         Ver más
@@ -50,15 +55,15 @@
               </div>
               <div class="modal-body">
                 <p><strong>Leído el:</strong> {{ entrada.libro_leido.fecha_fin }}</p>
-                <p><strong>Frase icónica:</strong> {{ entrada.frase_iconica }}</p>
                 <p><strong>Puntuación:</strong> {{ entrada.puntuacion }} ⭐</p>
+                <p><strong>Frase icónica:</strong> {{ entrada.frase_iconica }}</p>
                 <p><strong>Punto clave:</strong> {{ entrada.punto_clave|linebreaks }}</p>
                 <p><strong>Nota personal:</strong> {{ entrada.nota_personal|linebreaks }}</p>
               </div>
               <div class="modal-footer border-0">
-                <a href="{% url 'eliminar_entrada' entrada.pk %}" class="btn btn-primary cozy-btn">Eliminar</a>
-                <a href="{% url 'editar_entrada' entrada.pk %}" class="btn btn-secondary cozy-btn">Editar</a>
-                <button type="button" class="btn btn-outline-secondary cozy-btn" data-bs-dismiss="modal">Cerrar</button>
+                <a href="{% url 'eliminar_entrada' entrada.pk %}" class="btn btn-primary rounded-pill px-4 py-2">Eliminar</a>
+                <a href="{% url 'editar_entrada' entrada.pk %}" class="btn btn-primary rounded-pill px-4 py-2">Editar</a>
+                <button type="button" class="btn btn-secondary rounded-pill px-4 py-2" data-bs-dismiss="modal">Cerrar</button>
               </div>
             </div>
           </div>
