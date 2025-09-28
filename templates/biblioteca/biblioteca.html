@@ -8,16 +8,18 @@
     <link rel="stylesheet" href="{% static 'css/biblioteca.css' %}">
 
 </head>
-<body>
+<body class="bg-light-pink">
 <div class="d-flex justify-content-end me-4 mt-3">
   <a href="{% url 'inicio' %}" class="btn btn-outline-primary rounded-pill">🌸 Volver al inicio</a>
 </div>
 <div class="container">
-    <h2 class="text-center mb-4">📖🪻 Mi Biblioteca</h2>
+    <h2 class="text-center mb-4 title-cozy">📖🪻 Mi Biblioteca</h2>
 
     <!-- Buscador -->
     <form class="d-flex mb-4 justify-content-center" method="get">
-        <input class="form-control me-2 w-50" type="search" name="q" placeholder="Buscar por título o autor" aria-label="Buscar">
+        <input class="form-control me-2 w-50" type="search" name="q"
+           placeholder="Buscar por título o autor o categoría"
+           value="{{ query|default:'' }}">
         <button class="btn btn-primary rounded-pill px-4 py-2" type="submit">Buscar</button>
     </form>
 
@@ -38,7 +40,7 @@
                         {% endfor %}
                     {% else %}
                         (Sin categoría)
-                    {% endif %}</p>
+                    {% endif %} </p>
                 <div>
                     <a href="{% url 'ver_libro' libro.pk %}" class="btn btn-outline-secondary rounded-pill px-4 py-2">Ver más</a>
                     <a href="{% url 'editar_libro' libro.pk %}" class="btn btn-outline-secondary rounded-pill px-4 py-2"></i>Editar</a>

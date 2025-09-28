@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
-from django.db.models import Count
+from django.db.models import Count, Q
 from collections import defaultdict
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
@@ -25,8 +25,22 @@ def inicio(request):
 
 @login_required
 def biblioteca(request):
-    libros = LibroLeido.objects.filter(usuario=request.user)  # o Libro.objects.all() según tu modelo
-    return render(request, 'biblioteca/biblioteca.html', {'libros': libros})
+    query = request.GET.get('q')
+    
+    if query:
+        libros = LibroLeido.objects.filter(
+            Q(titulo__icontains=query) |
+            Q(autor__icontains=query) |
+            Q(categoria__nombre__icontains=query),
+            usuario=request.user
+        ).distinct()
+    else:
+        libros = LibroLeido.objects.filter(usuario=request.user)
+    
+    return render(request, 'biblioteca/biblioteca.html', {
+        'libros': libros,
+        'query': query  # por si quieres mantener el texto buscado en el input
+    })
 
 @login_required
 def agregar_libro_leido(request):
@@ -73,7 +87,15 @@ def editar_libro(request, pk):
 
 @login_required
 def diario_lector(request):
-    diarios = DiarioLector.objects.filter(usuario=request.user).order_by('-fecha')
+    query = request.GET.get('q')
+    diarios = DiarioLector.objects.filter(usuario=request.user)
+
+    if query:
+        diarios = diarios.filter(
+            Q(libro_leido__titulo__icontains=query) |
+            Q(libro_leido__autor__icontains=query)
+        )
+
     return render(request, 'biblioteca/diario_lector.html', {'diarios': diarios})
 
 
