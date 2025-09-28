@@ -5,24 +5,27 @@
     <meta charset="UTF-8">
     <title>Mi Biblioteca</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'css/biblioteca.css' %}">
-
+    <!-- Usa el CSS cozy -->
+    <link rel="stylesheet" href="{% static 'css/diario.css' %}">
 </head>
 <body class="bg-light-pink">
+<!-- Botón volver -->
 <div class="d-flex justify-content-end me-4 mt-3">
-  <a href="{% url 'inicio' %}" class="btn btn-outline-primary rounded-pill">🌸 Volver al inicio</a>
+  <a href="{% url 'inicio' %}" class="btn cozy-btn rounded-pill">🌸 Volver al inicio</a>
 </div>
-<div class="container">
+
+<div class="container my-4">
     <h2 class="text-center mb-4 title-cozy">📖🪻 Mi Biblioteca</h2>
 
     <!-- Buscador -->
     <form class="d-flex mb-4 justify-content-center" method="get">
         <input class="form-control me-2 w-50" type="search" name="q"
-           placeholder="Buscar por título o autor o categoría"
+           placeholder="Buscar por título, autor o categoría"
            value="{{ query|default:'' }}">
         <button class="btn btn-primary rounded-pill px-4 py-2" type="submit">Buscar</button>
     </form>
 
+    <!-- Botón agregar libro -->
     <div class="text-center mb-4">
         <a href="{% url 'agregar_libro' %}" class="btn btn-outline-success rounded-pill px-4 py-2">+ Agregar nuevo libro</a>
     </div>
@@ -31,25 +34,29 @@
     <div class="row">
         {% for libro in libros %}
         <div class="col-md-4 mb-4">
-            <div class="card p-3 shadow-sm h-100">
-                <h4>{{ libro.titulo }}</h4>
-                <p>Autor: {{ libro.autor }}</p>
-                <p>Categoria: {% if libro.categoria.all %}
-                        {% for cat in libro.categoria.all %}
-                            {{ cat.nombre }}{% if not forloop.last %}, {% endif %}
-                        {% endfor %}
-                    {% else %}
-                        (Sin categoría)
-                    {% endif %} </p>
-                <div>
-                    <a href="{% url 'ver_libro' libro.pk %}" class="btn btn-outline-secondary rounded-pill px-4 py-2">Ver más</a>
-                    <a href="{% url 'editar_libro' libro.pk %}" class="btn btn-outline-secondary rounded-pill px-4 py-2"></i>Editar</a>
-                    <a href="{% url 'eliminar_libro' libro.pk %}"  class="btn btn-outline-secondary rounded-pill px-4 py-2">Eliminar</a>
+            <div class="card h-100 shadow-sm cozy-card equal-card">
+                <div class="card-body d-flex flex-column">
+                    <h4 class="text-cozy">{{ libro.titulo }}</h4>
+                    <p class="text-cozy"><strong>Autor:</strong> {{ libro.autor }}</p>
+                    <p class="text-cozy"><strong>Categoría:</strong>
+                        {% if libro.categoria.all %}
+                            {% for cat in libro.categoria.all %}
+                                {{ cat.nombre }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            (Sin categoría)
+                        {% endif %}
+                    </p>
+                    <div class="mt-auto">
+                        <a href="{% url 'ver_libro' libro.pk %}" class="btn btn-outline-secondary rounded-pill px-4 py-2">Ver más</a>
+                        <a href="{% url 'editar_libro' libro.pk %}" class="btn btn-outline-secondary rounded-pill px-4 py-2">Editar</a>
+                        <a href="{% url 'eliminar_libro' libro.pk %}" class="btn btn-outline-secondary rounded-pill px-4 py-2">Eliminar</a>
+                    </div>
                 </div>
             </div>
         </div>
         {% empty %}
-        <p class="text-center">No hay libros disponibles.</p>
+        <p class="text-center text-muted">No hay libros disponibles.</p>
         {% endfor %}
     </div>
 </div>
