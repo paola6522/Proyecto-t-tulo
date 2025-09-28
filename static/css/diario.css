@@ -1,61 +1,95 @@
-/* Fondo cálido */
+/* Fondo limpio crema */
 body.bg-light-pink {
-  background-color: #fff8f6;
+  background-color: #fffaf5;
 }
 
 /* Títulos principales */
 .title-cozy {
-  color: #d28cb0; /* Rosa pastel lavanda */
+  color: #7b4e4e;
   font-family: 'Segoe UI', Tahoma, sans-serif;
   font-weight: bold;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
-/* Tarjetas */
+/* Tarjetas de entradas */
 .cozy-card {
-  background-color: #fdfaf5;
-  border: 2px solid #f5d0d0;
+  background-color: #f8f9fa;
+  border: none;
   border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .cozy-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(210, 140, 176, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
 .equal-card {
-  min-height: 300px;
+  min-height: 250px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
-/* Texto */
-.text-cozy {
-  color: #a65c7c;
+/* Títulos de tarjeta */
+.cozy-card .card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #523b3b;
 }
 
-/* Botones */
+/* Textos */
+.card-text {
+  font-size: 0.95rem;
+  color: #5e5e5e;
+}
+
+/* Botón estilo suave */
+.btn-outline-secondary {
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  padding: 6px 16px;
+}
+
+/* Botón rosa suave */
 .cozy-btn {
-  background-color: #f5d0d0;
-  border: none;
-  color: #5c3b46;
+  background-color: #f3d9d9;
+  color: #4a2f2f;
   font-weight: bold;
+  border: none;
   border-radius: 50px;
   padding: 8px 20px;
-  transition: background-color 0.2s ease;
 }
 .cozy-btn:hover {
-  background-color: #eab8b8;
-  color: #4a2f37;
+  background-color: #e6c5c5;
 }
 
 /* Modal */
 .cozy-modal {
-  background-color: #fff8f6;
+  background-color: #fffaf5;
   border-radius: 1rem;
   padding: 20px;
 }
-.cozy-modal .modal-title {
-  font-size: 1.5rem;
-  color: #a65c7c;
+
+.modal-title {
+  color: #7b4e4e;
+  font-weight: 600;
 }
+
+/* Formulario de búsqueda */
+form input[type="search"] {
+  border-radius: 1rem;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+form button {
+  border-radius: 1rem;
+  padding: 10px 20px;
+}
+
+
 
