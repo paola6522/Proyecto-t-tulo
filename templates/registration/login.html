@@ -21,6 +21,10 @@
         <button type="submit" class="btn btn-custom">Iniciar sesión</button>
     </form>
 
+    <p class="text-center mt-3">
+        <a href="{% url 'password_reset' %}" class="link-secondary">¿Olvidaste tu contraseña?</a>
+    </p>
+
     <div class="alt-options">
         ¿No tienes cuenta? <a href="{% url 'registro' %}"> Regístrate aquí</a>
     </div>
