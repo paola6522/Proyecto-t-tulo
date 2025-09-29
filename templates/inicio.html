@@ -23,7 +23,7 @@
                 {{ user.username }}
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                <li><a class="dropdown-item" href="{% url 'estadisticas' %}">📈 Ver estadísticas</a></li>
+                <li><a class="dropdown-item" href="{% url 'estadisticas' %}">〽 Ver estadísticas</a></li>
                 <li>
                     <form method="post" action="{% url 'logout' %}" style="display:inline;">
                         {% csrf_token %}

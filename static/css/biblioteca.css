@@ -1,0 +1,20 @@
+body.bg-light-pink {
+    background-color: #fff9f5;
+    font-family: 'Georgia', serif;
+}
+
+.title-cozy {
+    color: #7a4e39;
+    font-weight: bold;
+}
+
+.libro-card {
+    background-color: #fefefe;
+    border-radius: 20px;
+    border: none;
+}
+
+.text-cozy {
+    color: #6e4d42;
+    font-weight: 500;
+}
