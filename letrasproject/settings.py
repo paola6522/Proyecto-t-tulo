@@ -142,3 +142,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'paola.uribe.rios.2003@gmail.com'
 EMAIL_HOST_PASSWORD = 'pyhv mydz yhjz trii'
 
+LANGUAGE_CODE = 'es'
+USE_I18N = True
+
+

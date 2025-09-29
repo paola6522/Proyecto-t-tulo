@@ -1,20 +1,91 @@
-body.bg-light-pink {
-    background-color: #fff9f5;
-    font-family: 'Georgia', serif;
+/* Fondo general de toda la página */
+body.bg-cream {
+    background-color: #fdf8f4;
 }
 
+/* Título principal */
 .title-cozy {
-    color: #7a4e39;
-    font-weight: bold;
+    color: #7a4e2d;
+    font-family: 'Georgia', serif;
+    font-weight: 700;
 }
 
+/* Input de búsqueda con bordes redondeados */
+.input-cozy {
+    border-radius: 50px;
+    border: 1px solid #d8cfc4;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+}
+
+/* Botones ovalados estilo cozy */
+.btn-custom,
+.btn,
+.btn-outline-primary,
+.btn-outline-success,
+.btn-outline-secondary {
+    border-radius: 50px !important;
+    padding: 0.6rem 1.4rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover general */
+.btn-outline-primary:hover,
+.btn-outline-success:hover,
+.btn-outline-secondary:hover {
+    transform: translateY(-2px);
+}
+
+/* Colores de botones */
+.btn-outline-primary {
+    color: #5b6fa0;
+    border-color: #5b6fa0;
+}
+.btn-outline-primary:hover {
+    background-color: #5b6fa0;
+    color: #fff;
+}
+
+.btn-outline-success {
+    color: #6b8e5b;
+    border-color: #6b8e5b;
+}
+.btn-outline-success:hover {
+    background-color: #6b8e5b;
+    color: #fff;
+}
+
+.btn-outline-secondary {
+    color: #7a4e2d;
+    border-color: #7a4e2d;
+}
+.btn-outline-secondary:hover {
+    background-color: #7a4e2d;
+    color: #fff;
+}
+
+/* Tarjetas de cada libro */
 .libro-card {
-    background-color: #fefefe;
-    border-radius: 20px;
-    border: none;
+    background-color: #ffffff;  /* blanco puro */
+    border: 1px solid #e0d7cc;
+    border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.libro-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
 }
 
-.text-cozy {
-    color: #6e4d42;
-    font-weight: 500;
+/* Texto marrón cálido */
+.text-brown {
+    color: #7a4e2d;
 }
+
+/* Ajuste para enlaces dentro de tarjetas */
+.libro-card a {
+    text-decoration: none;
+}
+
+

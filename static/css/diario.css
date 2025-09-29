@@ -1,44 +1,113 @@
-body {
-    background-color: #fff9f5;
+/* Fondo general y tipografía elegante */
+body.bg-cream {
+    background-color: #fdf8f4;
     font-family: 'Georgia', serif;
 }
 
+/* Contenedor blanco (para formularios u otras secciones) */
+.form-container {
+    background-color: #ffffff;
+    border: 2px solid #e0d7cc;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* Títulos principales */
 .title-cozy {
+    color: #7a4e2d;
+    font-weight: 700;
     font-family: 'Georgia', serif;
-    font-weight: bold;
-    color: #b76e79;
-    font-size: 2rem;
 }
 
-.diario-card {
+/* Etiquetas de formularios (incluye las de Recomendaciones) */
+.form-label {
+    font-weight: bold;
+    color: #7a4e2d;
+    font-family: 'Georgia', serif;
+}
+
+/* Campos de texto y select con borde redondeado */
+.form-control,
+.form-select {
+    border-radius: 50px;
+    border: 1px solid #d8cfc4;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
     background-color: #fff;
-    border: 1px solid #f0e2d0;
-    border-radius: 1rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.06);
-    padding: 20px;
-    margin-bottom: 25px;
 }
 
-.diario-titulo {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #91394f;
+/* Botones generales con estilo cozy */
+.btn-custom,
+.btn-outline-rose,
+.btn-outline-brown,
+.btn-outline-primary {
+    border-radius: 50px;
+    padding: 0.7rem 2rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.diario-fecha,
-.diario-puntaje {
-    font-size: 0.95rem;
-    color: #444;
+/* Botón primario (azul suave) para búsqueda o volver */
+.btn-outline-primary {
+    color: #5b6fa0;
+    border: 2px solid #5b6fa0;
+    background-color: #fff;
+}
+.btn-outline-primary:hover {
+    background-color: #5b6fa0;
+    color: #fff;
+    transform: translateY(-2px);
 }
 
-.btn-vermas {
-    width: 100%;
-    margin-top: 15px;
+/* Botón guardar (rosa cálido) */
+.btn-outline-rose {
+    color: #fff;
+    background-color: #d46b8e;
+    border: 2px solid #d46b8e;
+}
+.btn-outline-rose:hover {
+    background-color: #b94d70;
+    border-color: #b94d70;
+    transform: translateY(-2px);
 }
 
-input[type="search"] {
-    font-family: 'Georgia', serif;
+/* Botón cancelar o marrón cálido */
+.btn-outline-brown {
+    color: #fff;
+    background-color: #7a4e2d;
+    border: 2px solid #7a4e2d;
 }
+.btn-outline-brown:hover {
+    background-color: #5d3820;
+    border-color: #5d3820;
+    transform: translateY(-2px);
+}
+
+/* Tarjetas (para diarios o recomendaciones) */
+.card {
+    background-color: #ffffff;
+    border: 1px solid #e0d7cc;
+    border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+
+.card h5 {
+    color: #7a4e2d;
+    font-weight: 600;
+}
+
+
+
+
+
+
+
 
 
 
