@@ -17,7 +17,7 @@
 
 <div class="container mt-5">
     <div class="form-container mx-auto" style="max-width:650px;">
-        <h2 class="text-center">💐📝 Nueva entrada del diario</h2>
+        <h2 class="text-center">🪶📜 Nueva entrada del diario</h2>
 
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
@@ -54,8 +54,8 @@
             </div>
 
             <div class="text-center">
-                <button type="submit" class="btn btn-primary">Guardar entrada</button>
-                <a href="{% url 'diario_lector' %}" class="btn btn-primary">Cancelar</a>
+                <button type="submit" class="btn btn-outline-secondary rounded-pill px-4 py-2">Guardar entrada</button>
+                <a href="{% url 'diario_lector' %}" class="btn btn-outline-secondary rounded-pill px-4 py-2">Cancelar</a>
             </div>
         </form>
     </div>
