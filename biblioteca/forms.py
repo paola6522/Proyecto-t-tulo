@@ -3,6 +3,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm # Formulario base para registrar usuarios
 from django.contrib.auth.models import User # Modelo de usuario de Django
 from .models import LibroLeido, Libro, DiarioLector # Modelos creados en tu app
+from django.core.exceptions import ValidationError
+import re
 
 # Lista de posibles estados que un libro puede tener
 ESTADOS = [
@@ -22,8 +24,8 @@ class RegistroUsuarioForm(UserCreationForm):
     )
 
     class Meta:
-        model = User # Se utiliza el modelo de usuario de Django
-        fields = ['username', 'email', 'password1', 'password2'] # Campos visibles en el formulario
+        model = User  # Se utiliza el modelo de usuario de Django
+        fields = ['username', 'email', 'password1', 'password2']  # Campos visibles en el formulario
         labels = {
             'username': 'Nombre de usuario',
             'email': 'Correo electrónico',
@@ -37,6 +39,37 @@ class RegistroUsuarioForm(UserCreationForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['placeholder'] = field.label
+
+    # 🔒 Validación personalizada para la contraseña
+    def clean_password1(self):
+        password = self.cleaned_data.get("password1")
+
+        # Longitud mínima
+        if len(password) < 8:
+            raise ValidationError("La contraseña debe tener al menos 8 caracteres.")
+
+        # Al menos una mayúscula
+        if not re.search(r"[A-Z]", password):
+            raise ValidationError("Debe contener al menos una letra mayúscula.")
+
+        # Al menos una minúscula
+        if not re.search(r"[a-z]", password):
+            raise ValidationError("Debe contener al menos una letra minúscula.")
+
+        # Al menos un número
+        if not re.search(r"\d", password):
+            raise ValidationError("Debe contener al menos un número.")
+
+        # Al menos un carácter especial
+        if not re.search(r"[^\w\s]", password):
+            raise ValidationError("Debe contener al menos un carácter especial (ej. !, @, #, $, %, &, *, ?, _, -).")
+
+
+        # No permitir más de 3 caracteres idénticos seguidos
+        if re.search(r"(.)\1\1", password):
+            raise ValidationError("No puede contener más de 3 caracteres iguales seguidos.")
+
+        return password
 
 #FORMULARIO PARA REGISTRAR UN LIBRO LEÍDO
 class LibroLeidoForm(forms.ModelForm):

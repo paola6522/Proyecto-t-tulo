@@ -20,8 +20,10 @@ import os
 import joblib
 import pandas as pd
 
+
 def inicio(request):
     return render(request, 'inicio.html')
+
 
 @login_required
 def biblioteca(request):
@@ -168,22 +170,24 @@ def recomendaciones(request):
     })
 
 
+def inicio(request):
+    return render(request, 'inicio.html')
+
+
 def registro_view(request):
     if request.method == 'POST':
         form = RegistroUsuarioForm(request.POST)
         if form.is_valid():
             usuario = form.save()
-            login(request, usuario)  # Inicia sesión automáticamente
-            return redirect('inicio')  # O redirige donde desees
+            login(request, usuario)
+            return redirect('inicio')
+        else:
+            print("Errores del formulario:", form.errors)  # 👈 Debug
     else:
         form = RegistroUsuarioForm()
     
     return render(request, 'registration/registro.html', {'form': form})
 
-def cerrar_sesion(request):
-    logout(request)
-    messages.info(request, "Has cerrado sesión correctamente.")
-    return redirect('inicio')
 
 @login_required
 def estadisticas(request):
