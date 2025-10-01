@@ -17,15 +17,14 @@ ESTADOS = [
 
 #FORMULARIO DE REGISTRO DE USUARIO
 class RegistroUsuarioForm(UserCreationForm):
-    # Campo extra para capturar el correo electrónico del usuario
     email = forms.EmailField(
         required=True,
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Correo electrónico'})
     )
 
     class Meta:
-        model = User  # Se utiliza el modelo de usuario de Django
-        fields = ['username', 'email', 'password1', 'password2']  # Campos visibles en el formulario
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
         labels = {
             'username': 'Nombre de usuario',
             'email': 'Correo electrónico',
@@ -35,37 +34,31 @@ class RegistroUsuarioForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Se aplican clases CSS Bootstrap a todos los campos para mejorar la estética
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['placeholder'] = field.label
 
-    # 🔒 Validación personalizada para la contraseña
     def clean_password1(self):
         password = self.cleaned_data.get("password1")
+        print("👉 Validando contraseña:", password)  # Debug para confirmar que este método corre
 
-        # Longitud mínima
         if len(password) < 8:
             raise ValidationError("La contraseña debe tener al menos 8 caracteres.")
 
-        # Al menos una mayúscula
         if not re.search(r"[A-Z]", password):
             raise ValidationError("Debe contener al menos una letra mayúscula.")
 
-        # Al menos una minúscula
         if not re.search(r"[a-z]", password):
             raise ValidationError("Debe contener al menos una letra minúscula.")
 
-        # Al menos un número
         if not re.search(r"\d", password):
             raise ValidationError("Debe contener al menos un número.")
 
-        # Al menos un carácter especial
-        if not re.search(r"[^\w\s]", password):
+        # ✅ versión flexible
+        if not re.search(r"[^\w\s]|_", password):
             raise ValidationError("Debe contener al menos un carácter especial (ej. !, @, #, $, %, &, *, ?, _, -).")
 
 
-        # No permitir más de 3 caracteres idénticos seguidos
         if re.search(r"(.)\1\1", password):
             raise ValidationError("No puede contener más de 3 caracteres iguales seguidos.")
 
