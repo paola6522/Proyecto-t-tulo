@@ -37,6 +37,18 @@ class RegistroUsuarioForm(UserCreationForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['placeholder'] = field.label
+    
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if User.objects.filter(email=email).exists():
+            raise ValidationError("Este correo ya está registrado.")
+        return email
+    
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        if not re.match(r'^[\w.@+-]+$', username):
+            raise ValidationError("El nombre de usuario contiene caracteres inválidos.")
+        return username
 
     def clean_password1(self):
         password = self.cleaned_data.get("password1")
