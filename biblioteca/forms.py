@@ -54,6 +54,10 @@ class RegistroUsuarioForm(UserCreationForm):
         password = self.cleaned_data.get("password1")
         print("👉 Validando contraseña:", password)  # Debug para confirmar que este método corre
 
+        comunes = ["123456", "password", "qwerty", "admin"]
+        if password.lower() in comunes:
+           raise ValidationError("La contraseña es demasiado común.")
+
         if len(password) < 8:
             raise ValidationError("La contraseña debe tener al menos 8 caracteres.")
 
@@ -92,6 +96,15 @@ class LibroLeidoForm(forms.ModelForm):
             'pdf': forms.ClearableFileInput(attrs={'class': 'form-control'}), # Opción para subir archivo
             'link': forms.URLInput(attrs={'class': 'form-control rounded-3'}), # Link externo del libro
         }
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        fecha_inicio = cleaned_data.get("fecha_inicio")
+        fecha_fin = cleaned_data.get("fecha_fin")
+
+        # Validar fechas
+        if fecha_inicio and fecha_fin and fecha_fin < fecha_inicio:
+            raise ValidationError("La fecha de término no puede ser anterior a la fecha de inicio.")
 
 #FORMULARIO PARA AÑADIR LIBROS A LA BIBLIOTECA
 class LibroForm(forms.ModelForm):
