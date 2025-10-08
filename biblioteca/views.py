@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Libro, LibroLeido, DiarioLector
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, logout
-from .forms import RegistroUsuarioForm, LibroLeidoForm, DiarioLectorForm, LibroForm, EditarLibroForm
+from .forms import RegistroUsuarioForm, LibroLeidoForm, DiarioLectorForm, LibroForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib import messages

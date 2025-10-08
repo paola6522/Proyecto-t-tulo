@@ -91,8 +91,8 @@ class LibroLeidoForm(forms.ModelForm):
             'categoria': forms.SelectMultiple(attrs={'class': 'form-select'}), # Selección múltiple de géneros
             'resumen': forms.Textarea(attrs={'class': 'form-control rounded-3', 'rows': 4}), # Resumen del libro
             'estado': forms.Select(attrs={'class': 'form-select rounded-3'}), # Estado del libro (iniciado, finalizado, etc.)
-            'fecha_inicio': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}), # Fecha de inicio
-            'fecha_fin': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}), # Fecha de fin
+            'fecha_inicio': forms.DateInput(attrs={'class': 'form-control'}), # Fecha de inicio
+            'fecha_fin': forms.DateInput(attrs={'class': 'form-control'}), # Fecha de fin
             'pdf': forms.ClearableFileInput(attrs={'class': 'form-control'}), # Opción para subir archivo
             'link': forms.URLInput(attrs={'class': 'form-control rounded-3'}), # Link externo del libro
         }
