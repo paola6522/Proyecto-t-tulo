@@ -1,7 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import User # Importamos el modelo de usuarios de Django
+from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator, FileExtensionValidator
+from django.core.exceptions import ValidationError
 
-# LISTA DE OPCIONES PARA EL ESTADO DEL LIBRO
+# ------------------------
+# Lista de opciones de estado
+# ------------------------
 ESTADO_LIBRO = [
     ('pendiente', 'Pendiente'),
     ('iniciado', 'Iniciado'),
@@ -10,50 +14,79 @@ ESTADO_LIBRO = [
     ('abandonado', 'Abandonado'),
 ]
 
-# MODELO CATEGORÍA (GÉNERO LITERARIO)
+# ------------------------
+# Modelo Categoría (Género literario)
+# ------------------------
 class Categoria(models.Model):
-    # Nombre único de la categoría (ej: Fantasía, Romance, Ciencia Ficción)
-    nombre = models.CharField(max_length=100, unique=True)
+    nombre = models.CharField(max_length=100, unique=True, db_index=True)  # índice para búsquedas rápidas
 
     def __str__(self):
-        return self.nombre # Se mostrará el nombre al representar el objeto como texto
+        return self.nombre
 
-# MODELO LIBRO (CATÁLOGO GENERAL DE LIBROS)
+
+# ------------------------
+# Modelo Libro (catálogo de libros agregados por usuario)
+# ------------------------
 class Libro(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE) # Usuario que añadió el libro
-    titulo = models.CharField(max_length=200) # Título del libro
-    autor = models.CharField(max_length=100)   # Autor del libro
-    categoria = models.ManyToManyField(Categoria) # Relación muchos a muchos con categorías
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)  # se elimina con el usuario
+    titulo = models.CharField(max_length=200)
+    autor = models.CharField(max_length=100)
+    categoria = models.ManyToManyField(Categoria, blank=True)  # categorías opcionales
 
     def __str__(self):
-        return self.titulo # Representación legible del libro
-    
-# MODELO LIBRO LEÍDO (PERSONAL DE CADA USUARIO)
+        return self.titulo
+
+
+# ------------------------
+# Modelo LibroLeido (libros en la biblioteca personal)
+# ------------------------
+def validar_pdf(value):
+    """Valida que el archivo sea PDF y no pese más de 5 MB."""
+    if value.size > 5 * 1024 * 1024:  # 5MB
+        raise ValidationError("El archivo no puede superar los 5 MB.")
+
 class LibroLeido(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE) # Usuario que leyó el libro
-    titulo = models.CharField(max_length=200, default="Sin título")  # Título personalizado (editable)
-    autor = models.CharField(max_length=100, default="Desconocido")  # Autor del libro
-    categoria = models.ManyToManyField(Categoria, blank=True)  # Categorías asociadas
-    resumen = models.TextField() # Breve descripción del contenido o experiencia lectora
-    estado = models.CharField(max_length=20, choices=ESTADO_LIBRO) # Estado de lectura
-    fecha_inicio = models.DateField(null=True, blank=True) # Fecha en que se comenzó el libro
-    fecha_fin = models.DateField(null=True, blank=True) # Fecha en que se terminó el libro
-    pdf = models.FileField(upload_to='libros/', null=True, blank=True) # Archivo PDF del libro (opcional)
-    link = models.URLField(blank=True, null=True) # Enlace al libro en línea (opcional)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    titulo = models.CharField(max_length=200, default="Sin título")
+    autor = models.CharField(max_length=100, default="Desconocido")
+    categoria = models.ManyToManyField(Categoria, blank=True)
+    resumen = models.TextField(max_length=2000, blank=True)  # límite para evitar textos enormes
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADO_LIBRO,
+        default='pendiente'
+    )
+    fecha_inicio = models.DateField(null=True, blank=True)
+    fecha_fin = models.DateField(null=True, blank=True)
+    pdf = models.FileField(
+        upload_to='libros/',
+        null=True, blank=True,
+        validators=[
+            FileExtensionValidator(allowed_extensions=['pdf']),  # solo PDF
+            validar_pdf
+        ]
+    )
+    link = models.URLField(blank=True, null=True)
 
     def __str__(self):
-        return self.titulo # Mostrar título en listados y admin
+        return self.titulo
 
-# MODELO DIARIO LECTOR (REGISTRO PERSONAL DE NOTAS)
+
+# ------------------------
+# Modelo DiarioLector (notas del usuario)
+# ------------------------
 class DiarioLector(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE) # Usuario dueño del diario
-    libro_leido = models.ForeignKey(LibroLeido, on_delete=models.CASCADE) # Libro al que pertenece la entrada
-    fecha = models.DateField(auto_now_add=True) # Fecha de la entrada (se asigna automáticamente al crear)
-    puntuacion = models.IntegerField(default=0) #Puntuación del libro de 0 a 5
-    frase_iconica = models.TextField(blank=True) # Frase memorable o cita del libro
-    punto_clave = models.TextField(blank=True) # Momento o idea central del libro
-    nota_personal = models.TextField(blank=True) # Reflexión o comentario personal sobre la lectura
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    libro_leido = models.ForeignKey(LibroLeido, on_delete=models.CASCADE)
+    fecha = models.DateField(auto_now_add=True)
+    puntuacion = models.IntegerField(
+        default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(5)]  # puntuación segura 0–5
+    )
+    frase_iconica = models.TextField(blank=True, max_length=500)
+    punto_clave = models.TextField(blank=True, max_length=1000)
+    nota_personal = models.TextField(blank=True, max_length=2000)
 
     def __str__(self):
-        # Muestra la entrada con fecha y título del libro leído
-        return f"Entrada de {self.fecha} - {self.libro_leido.libro.titulo}"
+        return f"Entrada {self.fecha} - {self.libro_leido.titulo}"
+

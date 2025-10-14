@@ -145,4 +145,12 @@ EMAIL_HOST_PASSWORD = 'pyhv mydz yhjz trii'
 LANGUAGE_CODE = 'es'
 USE_I18N = True
 
+AUTHENTICATION_BACKENDS = [
+    "biblioteca.backends.EmailOrUsernameModelBackend",  # nuestro backend
+    "django.contrib.auth.backends.ModelBackend",        # backend por defecto
+]
+
+
+
+
 

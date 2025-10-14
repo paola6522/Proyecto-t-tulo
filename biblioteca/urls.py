@@ -3,6 +3,7 @@ from . import views # Importa las vistas definidas en views.py
 from django.contrib.auth.views import LogoutView # Vista genérica de Django para cerrar sesión
 from .views import registro_view # Importación explícita de la vista personalizada de registro
 from django.contrib.auth import views as auth_views # Alias para usar vistas de autenticación
+from .forms import EmailOrUsernameLoginForm # Formulario personalizado para login con email o username
 
 urlpatterns = [
     path('', views.inicio, name='inicio'), # Página de inicio
@@ -19,10 +20,10 @@ urlpatterns = [
     path('agregar-entrada/', views.agregar_entrada, name='agregar_diario'),# Duplicada hay que verificar que es lo quehace si se borra se cae la pagina # Agregar una nueva entrada al diario lector (nota, puntuación, etc.)
     path('logout/', LogoutView.as_view(next_page='inicio'), name='logout'), # Cerrar sesión del usuario (usa vista genérica de Django)
     path('registro/', registro_view, name='registro'), # Registro personalizado de usuario
-    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'), # Inicio de sesión con plantilla personalizada
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html', authentication_form=EmailOrUsernameLoginForm), name='login'), # Inicio de sesión con plantilla personalizada
     path('password_reset/', auth_views.PasswordResetView.as_view(template_name='registration/password_reset_form.html'), name='password_reset'),
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), name='password_reset_complete'),
-    path('estadisticas/', views.estadisticas, name='estadisticas'), # Página de estadísticas de lectura (gráficos, totales, etc.)    
+    path('estadisticas/', views.estadisticas, name='estadisticas'), # Página de estadísticas de lectura (gráficos, totales, etc.) 
 ]
