@@ -65,7 +65,7 @@
                     <p class="mb-2">
                         Prueba agregando algunos libros más con su ISBN correcto para mejorar la magia del recomendador.
                     </p>
-                    <a href="{% url 'biblioteca' %}" class="btn btn-outline-primary rounded-pill mt-2">
+                    <a class="text-center mb-5" href="{% url 'biblioteca' %}" class="btn btn-outline-primary rounded-pill mt-2">
                         Agregar más libros
                     </a>
                 </div>
@@ -95,7 +95,7 @@
                                 <div class="mt-2">
                                     {% if libro.is_pending %}
                                         <button class="btn btn-secondary btn-sm rounded-pill" disabled>
-                                            ✅ Ya está en tu lista de Pendientes
+                                            Ya está en tu lista de Pendientes
                                         </button>
                                     {% else %}
                                         <form method="post" action="{% url 'marcar_pendiente' %}" class="d-inline">

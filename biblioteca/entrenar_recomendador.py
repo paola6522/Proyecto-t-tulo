@@ -45,4 +45,4 @@ joblib.dump({'isbn_index': isbn_index, 'index_isbn': index_isbn}, 'mapeos.pkl')
 book_meta.to_pickle('book_meta.pkl')
 pd.to_pickle(pivot, 'pivot_centered.pkl')
 
-print("✅ Modelo entrenado y archivos guardados correctamente.")
+print("Modelo entrenado y archivos guardados correctamente.")

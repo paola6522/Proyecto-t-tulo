@@ -2,78 +2,112 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Agregar libro</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/agregar_libro.css' %}">
+    <meta charset="UTF-8">
+    <title>🪶📜 Agregar libro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/agregar_libro.css' %}">
 </head>
-<body>
-  <div class="container py-5">
-    <div class="form-container mx-auto">
-      <h2 class="text-center form-title mb-4">
-        <span style="font-size: 1.5rem;">🪶📜</span> Agregar nuevo libro
-      </h2>
+<body class="bg-cream">
 
-      <!-- FORMULARIO UNIFICADO -->
-      <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+<div class="container mt-5">
+    <div class="form-container mx-auto" style="max-width:600px;">
+        <h2 class="text-center mb-4">🪶📜 Agregar nuevo libro</h2>
 
-        <div class="mb-3">
-          <label class="form-label">{{ form.titulo.label }}</label>
-          {{ form.titulo }}
-        </div>
+        {# Errores de validación #}
+        {% if form.errors or form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div>{{ field.label }}: {{ error }}</div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
 
-        <div class="mb-3">
-          <label class="form-label">{{ form.autor.label }}</label>
-          {{ form.autor }}
-        </div>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
 
-        <div class="mb-3">
-          <label class="form-label">{{ form.categoria.label }}</label>
-          {{ form.categoria }}
-        </div>
+            <!-- Título -->
+            <div class="mb-3">
+                <label class="form-label">{{ form.titulo.label }}</label>
+                {{ form.titulo }}
+            </div>
 
-        <div class="mb-3">
-          <label class="form-label">{{ form.resumen.label }}</label>
-          {{ form.resumen }}
-        </div>
+            <!-- Autor -->
+            <div class="mb-3">
+                <label class="form-label">{{ form.autor.label }}</label>
+                {{ form.autor }}
+            </div>
 
-        <div class="mb-3">
-          <label class="form-label">{{ form.estado.label }}</label>
-          {{ form.estado }}
-        </div>
+            <!-- ISBN -->
+            <div class="mb-3">
+                <label class="form-label">{{ form.isbn.label }}</label>
+                {{ form.isbn }}
+                <div class="form-text">
+                    Opcional. Si lo agregas, mejora la precisión de las recomendaciones. 📚
+                </div>
+            </div>
 
-        <div class="row mb-3">
-          <div class="col">
-            <label class="form-label">{{ form.fecha_inicio.label }}</label>
-            {{ form.fecha_inicio }}
-          </div>
-          <div class="col">
-            <label class="form-label">{{ form.fecha_fin.label }}</label>
-            {{ form.fecha_fin }}
-          </div>
-        </div>
+            <!-- Categorías -->
+            <div class="mb-3">
+                <label class="form-label">{{ form.categoria.label }}</label>
+                {{ form.categoria }}
+            </div>
 
-        <div class="mb-3">
-          <label class="form-label">{{ form.pdf.label }}</label>
-          {{ form.pdf }}
-        </div>
+            <!-- Resumen -->
+            <div class="mb-3">
+                <label class="form-label">{{ form.resumen.label }}</label>
+                {{ form.resumen }}
+            </div>
 
-        <div class="mb-3">
-          <label class="form-label">{{ form.link.label }}</label>
-          {{ form.link }}
-        </div>
+            <!-- Estado -->
+            <div class="mb-3">
+                <label class="form-label">{{ form.estado.label }}</label>
+                {{ form.estado }}
+            </div>
 
-        <div class="text-center mt-4">
-          <button type="submit" class="btn btn-outline-secondary btn-custom">Guardar</button>
-          <a href="{% url 'biblioteca' %}" class="btn btn-outline-secondary btn-custom">Cancelar</a>
-        </div>
-      </form>
-      <!-- FIN FORMULARIO -->
+            <!-- Fechas -->
+            <div class="row mb-3">
+                <div class="col">
+                    <label class="form-label">{{ form.fecha_inicio.label }}</label>
+                    {{ form.fecha_inicio }}
+                </div>
+                <div class="col">
+                    <label class="form-label">{{ form.fecha_fin.label }}</label>
+                    {{ form.fecha_fin }}
+                </div>
+            </div>
+
+            <!-- PDF -->
+            <div class="mb-3">
+                <label class="form-label">{{ form.pdf.label }}</label>
+                {{ form.pdf }}
+            </div>
+
+            <!-- Link -->
+            <div class="mb-3">
+                <label class="form-label">{{ form.link.label }}</label>
+                {{ form.link }}
+            </div>
+
+            <!-- Botones -->
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-outline-secondary btn-custom">
+                    Guardar
+                </button>
+                <a href="{% url 'biblioteca' %}" class="btn btn-outline-secondary btn-custom">
+                    Cancelar
+                </a>
+            </div>
+        </form>
     </div>
-  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 

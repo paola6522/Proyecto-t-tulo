@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.db.models import Count, Q
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.views.decorators.http import require_POST
 
 from .models import Libro, LibroLeido, DiarioLector, Pendiente
 from .forms import RegistroUsuarioForm, LibroLeidoForm, DiarioLectorForm
@@ -337,3 +338,59 @@ def estadisticas(request):
         'datos_linea': json.dumps(datos_linea),
     })
 
+# ------------------------
+# LISTA DE PENDIENTES   
+# ------------------------
+@login_required
+def pendientes(request):
+    """
+    Muestra la lista de libros que el usuario marcó como pendientes.
+    """
+    lista = Pendiente.objects.filter(usuario=request.user).order_by('-creado')
+
+    return render(request, 'biblioteca/pendientes.html', {
+        'pendientes': lista,
+    })
+
+# ------------------------
+# CONVERTIR PENDIENTE A LIBRO LEÍDO 
+# ------------------------
+@login_required
+@require_POST
+def pendiente_a_biblioteca(request, pendiente_id):
+    """
+    Convierte un libro Pendiente en un LibroLeido en la biblioteca del usuario.
+    """
+    pendiente = get_object_or_404(Pendiente, id=pendiente_id, usuario=request.user)
+
+    # Verificar si ya existe en la biblioteca del usuario
+    libro_existente = None
+
+    if pendiente.isbn:
+        libro_existente = LibroLeido.objects.filter(
+            usuario=request.user,
+            isbn=pendiente.isbn
+        ).first()
+
+    if not libro_existente:
+        libro_existente = LibroLeido.objects.filter(
+            usuario=request.user,
+            titulo__iexact=pendiente.titulo
+        ).first()
+
+    if libro_existente:
+        messages.info(request, f'"{pendiente.titulo}" ya está en tu biblioteca.')
+    else:
+        libro = LibroLeido.objects.create(
+            usuario=request.user,
+            titulo=pendiente.titulo,
+            autor=pendiente.autor or "Desconocido",
+            isbn=pendiente.isbn,
+            estado='pendiente',  # empieza como pendiente en la biblioteca
+        )
+        messages.success(request, f'"{libro.titulo}" fue agregado a tu biblioteca. ✨')
+
+    # Opcional: eliminarlo de la lista de Pendientes una vez movido
+    pendiente.delete()
+
+    return redirect('biblioteca')
