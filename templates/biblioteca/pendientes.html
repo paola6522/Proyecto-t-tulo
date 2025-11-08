@@ -9,7 +9,6 @@
 </head>
 <body class="bg-cream">
 
-<!-- Botón volver -->
 <div class="d-flex justify-content-end me-4 mt-3">
     <a href="{% url 'inicio' %}" class="btn btn-outline-primary rounded-pill">☘︎ ݁˖ Volver al inicio</a>
 </div>
@@ -17,9 +16,33 @@
 <div class="container mt-4">
     <h2 class="text-center mb-4 title-cozy">🧺✨ Libros Pendientes ✨🧺</h2>
 
-    {% if pendientes %}
+    {# 1) Libros pendientes desde tu biblioteca (LibroLeido.estado='pendiente') #}
+    {% if pendientes_biblioteca %}
+        <h5 class="mb-3">📜🍂 Desde tu biblioteca</h5>
+        <div class="row justify-content-center mb-4">
+            {% for l in pendientes_biblioteca %}
+                <div class="col-md-8 mb-3">
+                    <div class="card shadow-sm rounded-4 p-3 bg-light border-0">
+                        <h5 class="mb-1">{{ l.titulo }}</h5>
+                        <p class="text-muted m-0">Autor: <strong>{{ l.autor }}</strong></p>
+                        {% if l.isbn %}
+                            <p class="text-muted m-0"><small>ISBN: {{ l.isbn }}</small></p>
+                        {% endif %}
+                        <p class="text-muted m-0"><small>Estado actual: Pendiente (en tu biblioteca)</small></p>
+                        <a href="{% url 'editar_libro' l.id %}" class="btn btn-outline-secondary btn-sm rounded-pill mt-2">
+                             Ver / editar en biblioteca
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {# 2) Libros pendientes marcados desde recomendaciones (modelo Pendiente) #}
+    {% if pendientes_recomendador %}
+        <h5 class="mb-3">🧡 Guardados desde recomendaciones</h5>
         <div class="row justify-content-center">
-            {% for p in pendientes %}
+            {% for p in pendientes_recomendador %}
                 <div class="col-md-8 mb-3">
                     <div class="card shadow-sm rounded-4 p-3 bg-light border-0">
                         <h5 class="mb-1">{{ p.titulo }}</h5>
@@ -29,22 +52,27 @@
                         {% endif %}
                         <p class="text-muted"><small>Agregado: {{ p.creado|date:"d M Y" }}</small></p>
 
-                        <!-- Botón para agregar a la biblioteca -->
                         <form method="post" action="{% url 'pendiente_a_biblioteca' p.id %}" class="mt-2 text-end">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
-                                Agregar a mi biblioteca
+                                Agregar a mi biblioteca (como iniciado)
                             </button>
                         </form>
                     </div>
                 </div>
             {% endfor %}
         </div>
-    {% else %}
-        <p class="text-center text-muted">Todavía no has marcado libros como pendientes </p>
+    {% endif %}
+
+    {% if not pendientes_biblioteca and not pendientes_recomendador %}
+        <p class="text-center text-muted mt-4">
+            Todavía no tienes libros pendientes 🥹<br>
+            Puedes marcar libros desde tus lecturas o desde las recomendaciones.
+        </p>
     {% endif %}
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

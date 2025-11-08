@@ -344,12 +344,16 @@ def estadisticas(request):
 @login_required
 def pendientes(request):
     """
-    Muestra la lista de libros que el usuario marcó como pendientes.
+    Muestra:
+    - Libros marcados como Pendiente desde recomendaciones (modelo Pendiente)
+    - Libros en la biblioteca cuyo estado es 'pendiente' (modelo LibroLeido)
     """
-    lista = Pendiente.objects.filter(usuario=request.user).order_by('-creado')
+    pendientes_recomendador = Pendiente.objects.filter(usuario=request.user).order_by('-creado')
+    pendientes_biblioteca = LibroLeido.objects.filter(usuario=request.user, estado='pendiente').order_by('-id')
 
     return render(request, 'biblioteca/pendientes.html', {
-        'pendientes': lista,
+        'pendientes_recomendador': pendientes_recomendador,
+        'pendientes_biblioteca': pendientes_biblioteca,
     })
 
 # ------------------------
@@ -386,11 +390,10 @@ def pendiente_a_biblioteca(request, pendiente_id):
             titulo=pendiente.titulo,
             autor=pendiente.autor or "Desconocido",
             isbn=pendiente.isbn,
-            estado='pendiente',  # empieza como pendiente en la biblioteca
+            estado='iniciado',  # empieza como pendiente en la biblioteca
         )
         messages.success(request, f'"{libro.titulo}" fue agregado a tu biblioteca. ✨')
 
-    # Opcional: eliminarlo de la lista de Pendientes una vez movido
     pendiente.delete()
 
     return redirect('biblioteca')
