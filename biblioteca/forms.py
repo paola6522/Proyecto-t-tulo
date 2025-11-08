@@ -65,8 +65,8 @@ class RegistroUsuarioForm(UserCreationForm):
         if password.lower() in comunes:
             raise ValidationError("La contraseña es demasiado común.")
 
-        if len(password) < 12:
-            raise ValidationError("La contraseña debe tener al menos 12 caracteres.")
+        if len(password) < 8:
+            raise ValidationError("La contraseña debe tener al menos 8 caracteres.")
 
         if not re.search(r"[A-Z]", password):
             raise ValidationError("Debe contener al menos una letra mayúscula.")
