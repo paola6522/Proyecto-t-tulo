@@ -10,6 +10,7 @@ urlpatterns = [
     path('biblioteca/', views.biblioteca, name='biblioteca'), # Biblioteca personal del usuario (libros leídos)
     path('diario/', views.diario_lector, name='diario_lector'), # Diario lector (notas, frases y reflexiones personales)
     path('recomendaciones/', views.recomendaciones, name='recomendaciones'), # Recomendaciones de libros con IA
+    path('recomendaciones/pendiente/', views.marcar_pendiente, name='marcar_pendiente'), # Marcar libro recomendado como pendiente
     path('libro/<int:pk>/', views.ver_libro, name='ver_libro'), # Ver detalles de un libro leído (por ID)
     path('editar-libro/<int:pk>/', views.editar_libro, name='editar_libro'), # Editar detalles de un libro leído
     path('eliminar/<int:pk>/', views.eliminar_libro, name='eliminar_libro'), # Eliminar libro desde la biblioteca (uso de ID)

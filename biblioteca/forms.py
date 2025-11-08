@@ -65,8 +65,8 @@ class RegistroUsuarioForm(UserCreationForm):
         if password.lower() in comunes:
             raise ValidationError("La contraseña es demasiado común.")
 
-        if len(password) < 8:
-            raise ValidationError("La contraseña debe tener al menos 8 caracteres.")
+        if len(password) < 12:
+            raise ValidationError("La contraseña debe tener al menos 12 caracteres.")
 
         if not re.search(r"[A-Z]", password):
             raise ValidationError("Debe contener al menos una letra mayúscula.")
@@ -105,46 +105,85 @@ class RegistroUsuarioForm(UserCreationForm):
 #FORMULARIO PARA REGISTRAR UN LIBRO LEÍDO
 class LibroLeidoForm(forms.ModelForm):
     class Meta:
-        model = LibroLeido # Modelo correspondiente
-        exclude = ['usuario'] # El usuario se asigna automáticamente, no se muestra en el formulario
+        model = LibroLeido
+        exclude = ['usuario']
         widgets = {
-            'titulo': forms.TextInput(attrs={'class': 'form-control rounded-3'}),
-            'autor': forms.TextInput(attrs={'class': 'form-control rounded-3'}),
-            'categoria': forms.SelectMultiple(attrs={'class': 'form-select'}), # Selección múltiple de géneros
-            'resumen': forms.Textarea(attrs={'class': 'form-control rounded-3', 'rows': 4}), # Resumen del libro
-            'estado': forms.Select(attrs={'class': 'form-select rounded-3'}), # Estado del libro (iniciado, finalizado, etc.)
-            'fecha_inicio': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}), # Fecha de inicio
-            'fecha_fin': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}), # Fecha de fin
-            'pdf': forms.ClearableFileInput(attrs={'class': 'form-control'}), # Opción para subir archivo
-            'link': forms.URLInput(attrs={'class': 'form-control rounded-3'}), # Link externo del libro
+            'titulo': forms.TextInput(attrs={
+                'class': 'form-control rounded-3',
+            }),
+            'autor': forms.TextInput(attrs={
+                'class': 'form-control rounded-3',
+            }),
+            'isbn': forms.TextInput(attrs={
+                'class': 'form-control rounded-3',
+                'placeholder': 'Opcional. Ej: 9788478884452',
+            }),
+            'categoria': forms.SelectMultiple(attrs={
+                'class': 'form-select',
+            }),
+            'resumen': forms.Textarea(attrs={
+                'class': 'form-control rounded-3',
+                'rows': 4,
+            }),
+            'estado': forms.Select(attrs={
+                'class': 'form-select rounded-3',
+            }),
+            'fecha_inicio': forms.DateInput(
+                format='%Y-%m-%d',
+                attrs={'class': 'form-control', 'type': 'date'}
+            ),
+            'fecha_fin': forms.DateInput(
+                format='%Y-%m-%d',
+                attrs={'class': 'form-control', 'type': 'date'}
+            ),
+            'pdf': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+            }),
+            'link': forms.URLInput(attrs={
+                'class': 'form-control rounded-3',
+                'placeholder': 'Opcional. http:// o https://',
+            }),
         }
-    
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # formatos válidos desde el input
+        self.fields['fecha_inicio'].input_formats = ['%Y-%m-%d']
+        self.fields['fecha_fin'].input_formats = ['%Y-%m-%d']
+
+        # 🔹 IMPORTANTE: solo seteamos initial cuando NO es formulario enviado (GET, no POST)
+        if not self.is_bound and self.instance and self.instance.pk:
+            if self.instance.fecha_inicio:
+                self.initial['fecha_inicio'] = self.instance.fecha_inicio.strftime('%Y-%m-%d')
+            if self.instance.fecha_fin:
+                self.initial['fecha_fin'] = self.instance.fecha_fin.strftime('%Y-%m-%d')
+
     def clean(self):
         cleaned_data = super().clean()
-        fecha_inicio = cleaned_data.get("fecha_inicio")
-        fecha_fin = cleaned_data.get("fecha_fin")
-
-        # Validar fechas
-        if fecha_inicio and fecha_fin and fecha_fin < fecha_inicio:
+        fi = cleaned_data.get("fecha_inicio")
+        ff = cleaned_data.get("fecha_fin")
+        if fi and ff and ff < fi:
             raise ValidationError("La fecha de término no puede ser anterior a la fecha de inicio.")
-    
+        return cleaned_data
+
     def clean_titulo(self):
-        titulo = self.cleaned_data.get("titulo").strip()
-        if len(titulo) < 2:
+        t = (self.cleaned_data.get("titulo") or "").strip()
+        if len(t) < 2:
             raise ValidationError("El título debe tener al menos 2 caracteres.")
-        return titulo
+        return t
 
     def clean_autor(self):
-        autor = self.cleaned_data.get("autor").strip()
-        if len(autor) < 2:
+        a = (self.cleaned_data.get("autor") or "").strip()
+        if len(a) < 2:
             raise ValidationError("El autor debe tener al menos 2 caracteres.")
-        return autor
+        return a
 
     def clean_resumen(self):
-        resumen = self.cleaned_data.get("resumen")
-        if resumen and len(resumen) < 10:
+        r = self.cleaned_data.get("resumen")
+        if r and len(r.strip()) < 10:
             raise ValidationError("El resumen es demasiado corto, escribe al menos 10 caracteres.")
-        return resumen
+        return r
 
     def clean_link(self):
         link = self.cleaned_data.get("link")
@@ -152,17 +191,18 @@ class LibroLeidoForm(forms.ModelForm):
             raise ValidationError("El enlace debe comenzar con http:// o https://")
         return link
 
-#FORMULARIO PARA AÑADIR LIBROS A LA BIBLIOTECA
-class LibroForm(forms.ModelForm):
-    class Meta:
-        model = Libro # Modelo correspondiente
-        fields = ['titulo', 'autor', 'categoria'] # Campos del formulario
-        widgets = {
-            'titulo': forms.TextInput(attrs={'class': 'form-control'}),
-            'autor': forms.TextInput(attrs={'class': 'form-control'}),
-            'categoria': forms.SelectMultiple(attrs={'class': 'form-select'}),  # Permite seleccionar múltiples categorías
-        }
+    def clean_isbn(self):
+        isbn = (self.cleaned_data.get("isbn") or "").strip()
+        if not isbn:
+            return ""
+        normalized = isbn.replace("-", "").replace(" ", "")
+        if not normalized.isdigit():
+            raise ValidationError("El ISBN debe contener solo números (puedes usar guiones o espacios).")
+        if len(normalized) not in (10, 13):
+            raise ValidationError("El ISBN debe tener 10 o 13 dígitos.")
+        return normalized
 
+    
 #FORMULARIO PARA EL DIARIO LECTOR 
 class DiarioLectorForm(forms.ModelForm):
     class Meta:

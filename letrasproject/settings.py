@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'biblioteca',  # mi app
     'widget_tweaks',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

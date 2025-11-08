@@ -11,39 +11,113 @@
 
     <!-- Botón volver al inicio -->
     <div class="d-flex justify-content-end me-4 mt-3">
-        <a href="{% url 'inicio' %}" class="btn btn-outline-primary rounded-pill">.☘︎ ݁˖ Volver al inicio</a>
+        <a href="{% url 'inicio' %}" class="btn btn-outline-primary rounded-pill">
+            .☘︎ ݁˖ Volver al inicio
+        </a>
     </div>
 
     <div class="container mt-4">
-        <h2 class="text-center mb-4 title-cozy">☕🍂🧺🧸 Recomendaciones 🧸🧺🍂☕</h2>
+        <h2 class="text-center mb-4 title-cozy">
+            ☕🍂🧺🧸 Recomendaciones para ti 🧸🧺🍂☕
+        </h2>
 
-        <!-- Formulario para elegir libro base -->
-        <form method="get" class="mb-4 text-center">
-            <label for="libro" class="form-label">🤎 Elige un libro para recibir recomendaciones:</label>
-            <select name="libro" id="libro" class="form-select w-50 mx-auto">
-                {% for libro in libros_disponibles %}
-                    <option value="{{ libro }}" {% if libro == libro_base %}selected{% endif %}>{{ libro }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit" class="btn btn-outline-primary rounded-pill mt-3">Ver recomendaciones</button>
-        </form>
-
-        <h2 class="text-center mb-4">📜🍂 Recomendaciones basadas en: <em>{{ libro_base }}</em></h2>
-
-        <!-- Recomendaciones -->
-        <div class="row justify-content-center">
-            {% for libro in recomendaciones %}
-                <div class="col-md-8 mb-3">
-                    <div class="card shadow-sm rounded-4 p-3 bg-light border-0">
-                        <h5 class="mb-1">{{ libro.titulo }}</h5>
-                        <p class="text-muted m-0">Autor: <strong>{{ libro.autor }}</strong></p>
+        <!-- Mensajes de Django -->
+        {% if messages %}
+            <div class="mb-3">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                     </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Caso: sin base de datos de gustos -->
+        {% if not tiene_base %}
+            <div class="text-center text-muted mt-4">
+                <p class="mb-2">
+                    Aún no tengo suficiente información sobre tus lecturas para generar recomendaciones personalizadas. 🥺
+                </p>
+                <p class="mb-2">
+                    Empieza agregando libros a tu <strong>Biblioteca</strong> y marca su estado como
+                    <span class="badge bg-success-subtle text-success">Iniciado</span>,
+                    <span class="badge bg-info-subtle text-info">En curso</span> o
+                    <span class="badge bg-primary-subtle text-primary">Finalizado</span>.
+                </p>
+                <p>
+                    Si agregas el <strong>ISBN</strong> cuando registres tus libros,
+                    las recomendaciones serán mucho más precisas. 📚✨
+                </p>
+                <a href="{% url 'biblioteca' %}" class="btn btn-outline-primary rounded-pill mt-2">
+                    Ir a mi biblioteca
+                </a>
+            </div>
+        {% else %}
+
+            <!-- Caso: hay base de gustos pero no devolvió resultados -->
+            {% if not recomendaciones %}
+                <div class="text-center text-muted mt-4">
+                    <p class="mb-2">
+                        He analizado tus lecturas, pero todavía no encuentro coincidencias suficientes
+                        para recomendar nuevos títulos. 🧐
+                    </p>
+                    <p class="mb-2">
+                        Prueba agregando algunos libros más con su ISBN correcto para mejorar la magia del recomendador.
+                    </p>
+                    <a href="{% url 'biblioteca' %}" class="btn btn-outline-primary rounded-pill mt-2">
+                        Agregar más libros
+                    </a>
                 </div>
-            {% empty %}
-                <p class="text-center text-muted">No se encontraron recomendaciones por ahora.</p>
-            {% endfor %}
-        </div>
+            {% else %}
+
+                <!-- Lista de recomendaciones -->
+                <div class="row justify-content-center mt-3">
+                    {% for libro in recomendaciones %}
+                        <div class="col-md-8 mb-3">
+                            <div class="card shadow-sm rounded-4 p-3 bg-light border-0 d-flex flex-column">
+                                <div>
+                                    <h5 class="mb-1">{{ libro.title }}</h5>
+                                    <p class="text-muted m-0">
+                                        Autor:
+                                        <strong>
+                                            {{ libro.author|default:"Autor desconocido" }}
+                                        </strong>
+                                    </p>
+                                    {% if libro.isbn %}
+                                        <p class="small text-muted mb-1">ISBN: {{ libro.isbn }}</p>
+                                    {% endif %}
+                                    <p class="small text-muted">
+                                        Afinidad con tus gustos: <strong>{{ libro.score }}</strong>
+                                    </p>
+                                </div>
+
+                                <div class="mt-2">
+                                    {% if libro.is_pending %}
+                                        <button class="btn btn-secondary btn-sm rounded-pill" disabled>
+                                            ✅ Ya está en tu lista de Pendientes
+                                        </button>
+                                    {% else %}
+                                        <form method="post" action="{% url 'marcar_pendiente' %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="isbn" value="{{ libro.isbn }}">
+                                            <input type="hidden" name="titulo" value="{{ libro.title }}">
+                                            <input type="hidden" name="autor" value="{{ libro.author }}">
+                                            <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
+                                                + Marcar como Pendiente
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            {% endif %}
+        {% endif %}
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
