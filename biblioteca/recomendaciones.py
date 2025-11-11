@@ -18,7 +18,7 @@ index_isbn = mapeos['index_isbn']
 
 book_meta = pd.read_pickle(BOOK_META_PATH)
 
-# 👇 CLAVE: rellenar NaN acá
+#CLAVE: rellenar NaN acá
 pivot = pd.read_pickle(PIVOT_PATH).fillna(0)
 
 
