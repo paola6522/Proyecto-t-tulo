@@ -53,10 +53,13 @@
                         <p class="text-muted"><small>Agregado: {{ p.creado|date:"d M Y" }}</small></p>
 
                         <form method="post" action="{% url 'pendiente_a_biblioteca' p.id %}" class="mt-2 text-end">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill">
-                                Agregar a mi biblioteca (como iniciado)
-                            </button>
+                            <form method="post" action="{% url 'pendiente_a_biblioteca' p.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-primary btn-sm rounded-pill mt-2">
+                                    Mover a mi biblioteca
+                                </button>
+                            </form>
+
                         </form>
                     </div>
                 </div>

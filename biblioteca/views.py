@@ -213,13 +213,7 @@ def eliminar_entrada(request, pk):
 # ------------------------
 @login_required
 def recomendaciones(request):
-    """
-    Muestra recomendaciones basadas en los libros del usuario
-    con estado: iniciado, en_curso, finalizado.
-    Usa el modelo KNN cargado en recomendaciones.py
-    """
-
-    # Historial que define gustos del usuario
+    # Libros base del usuario para gustos (iniciado / en_curso / finalizado con ISBN)
     libros_base = LibroLeido.objects.filter(
         usuario=request.user,
         estado__in=['iniciado', 'en_curso', 'finalizado']
@@ -227,22 +221,48 @@ def recomendaciones(request):
 
     isbns_usuario = [l.isbn for l in libros_base]
 
-    recomendaciones = recomendar_para_usuario(isbns_usuario, top_n=15)
+    if not isbns_usuario:
+        return render(request, 'biblioteca/recomendaciones.html', {
+            'recomendaciones': [],
+            'tiene_base': False,
+        })
 
-    # Libros ya marcados como pendientes
-    pendientes_isbns = set(
-        Pendiente.objects.filter(usuario=request.user)
+    recomendaciones = recomendar_para_usuario(isbns_usuario, top_n=30)
+
+    # ISBN ya en biblioteca (cualquier estado)
+    isbns_biblioteca = set(
+        LibroLeido.objects.filter(usuario=request.user)
+        .exclude(isbn__isnull=True)
+        .exclude(isbn__exact='')
         .values_list('isbn', flat=True)
     )
 
+    # ISBN ya en pendientes
+    pendientes_isbns = set(
+        Pendiente.objects.filter(usuario=request.user)
+        .exclude(isbn__isnull=True)
+        .exclude(isbn__exact='')
+        .values_list('isbn', flat=True)
+    )
+
+    filtradas = []
     for r in recomendaciones:
-        r['is_pending'] = r['isbn'] in pendientes_isbns
+        isbn = r.get('isbn')
+        if not isbn:
+            continue
+
+        # 1) si ya está en biblioteca, NO lo recomendamos de nuevo
+        if isbn in isbns_biblioteca:
+            continue
+
+        # 2) marcamos flags para el template
+        r['is_pending'] = isbn in pendientes_isbns
+        filtradas.append(r)
 
     return render(request, 'biblioteca/recomendaciones.html', {
-        'recomendaciones': recomendaciones,
-        'tiene_base': bool(isbns_usuario),
+        'recomendaciones': filtradas,
+        'tiene_base': True,
     })
-
 
 # ------------------------
 # MARCAR LIBRO COMO PENDIENTE (desde recomendaciones)
@@ -360,40 +380,28 @@ def pendientes(request):
 # CONVERTIR PENDIENTE A LIBRO LEÍDO 
 # ------------------------
 @login_required
-@require_POST
-def pendiente_a_biblioteca(request, pendiente_id):
-    """
-    Convierte un libro Pendiente en un LibroLeido en la biblioteca del usuario.
-    """
-    pendiente = get_object_or_404(Pendiente, id=pendiente_id, usuario=request.user)
+def pendiente_a_biblioteca(request, pk):
+    pendiente = get_object_or_404(Pendiente, pk=pk, usuario=request.user)
 
-    # Verificar si ya existe en la biblioteca del usuario
-    libro_existente = None
-
-    if pendiente.isbn:
-        libro_existente = LibroLeido.objects.filter(
+    if request.method == 'POST':
+        # Crear libro en la biblioteca si no existe ya con mismo ISBN
+        libro, created = LibroLeido.objects.get_or_create(
             usuario=request.user,
-            isbn=pendiente.isbn
-        ).first()
-
-    if not libro_existente:
-        libro_existente = LibroLeido.objects.filter(
-            usuario=request.user,
-            titulo__iexact=pendiente.titulo
-        ).first()
-
-    if libro_existente:
-        messages.info(request, f'"{pendiente.titulo}" ya está en tu biblioteca.')
-    else:
-        libro = LibroLeido.objects.create(
-            usuario=request.user,
-            titulo=pendiente.titulo,
-            autor=pendiente.autor or "Desconocido",
-            isbn=pendiente.isbn,
-            estado='iniciado',  # empieza como pendiente en la biblioteca
+            isbn=pendiente.isbn if pendiente.isbn else None,
+            defaults={
+                'titulo': pendiente.titulo,
+                'autor': pendiente.autor or 'Desconocido',
+                'estado': 'pendiente',  # o 'iniciado' si prefieres
+            }
         )
-        messages.success(request, f'"{libro.titulo}" fue agregado a tu biblioteca. ✨')
 
-    pendiente.delete()
+        # Si ya existía uno con ese ISBN, no pasa nada raro
+        pendiente.delete()
 
-    return redirect('biblioteca')
+        messages.success(request, f'"{libro.titulo}" fue añadido a tu biblioteca desde Pendientes 🤎')
+        return redirect('biblioteca')
+
+    # Confirmación opcional (si quieres una página intermedia)
+    return render(request, 'biblioteca/confirmar_pendiente_a_biblioteca.html', {
+        'pendiente': pendiente
+    })
