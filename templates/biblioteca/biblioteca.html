@@ -11,15 +11,31 @@
 
 <!-- Mensajes -->
 {% if messages %}
-<div class="container mt-3">
+<div class="container mt-4">
   {% for message in messages %}
-  <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center rounded-pill shadow-sm" role="alert" style="background-color:#f8e9d6; color:#5b3a29;">
-    {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+  <div class="text-center my-3">
+    {% if 'eliminado' in message.message|lower %}
+      <div class="p-3 rounded-4 shadow-sm d-inline-block"
+           style="background-color:#f8d7da; color:#842029; font-weight:500; border:1px solid #f5c2c7; font-family:'Poppins', sans-serif;">
+        🍂 {{ message }}
+      </div>
+    {% elif 'success' in message.tags %}
+      <div class="p-3 rounded-4 shadow-sm d-inline-block"
+           style="background-color:#dff2e0; color:#2f4f2f; font-weight:500; border:1px solid #b4d3b0; font-family:'Poppins', sans-serif;">
+        🍂 {{ message }}
+      </div>
+    {% else %}
+      <div class="p-3 rounded-4 shadow-sm d-inline-block"
+           style="background-color:#f4e3ce; color:#5c3b27; font-weight:500; border:1px solid #e2c8a8; font-family:'Poppins', sans-serif;">
+        🍂 {{ message }}
+      </div>
+    {% endif %}
   </div>
   {% endfor %}
 </div>
 {% endif %}
+
+
 
 <!-- Botón volver -->
 <div class="d-flex justify-content-end me-4 mt-3">

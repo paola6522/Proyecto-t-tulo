@@ -380,11 +380,11 @@ def pendientes(request):
 # CONVERTIR PENDIENTE A LIBRO LEÍDO 
 # ------------------------
 @login_required
-def pendiente_a_biblioteca(request, pk):
-    pendiente = get_object_or_404(Pendiente, pk=pk, usuario=request.user)
+def pendiente_a_biblioteca(request, pendiente_id):
+    pendiente = get_object_or_404(Pendiente, pk=pendiente_id, usuario=request.user)
 
     if request.method == 'POST':
-        # Crear libro en la biblioteca si no existe ya con mismo ISBN
+        # Crear libro en biblioteca si no existe uno igual
         libro, created = LibroLeido.objects.get_or_create(
             usuario=request.user,
             isbn=pendiente.isbn if pendiente.isbn else None,
@@ -395,11 +395,13 @@ def pendiente_a_biblioteca(request, pk):
             }
         )
 
-        # Si ya existía uno con ese ISBN, no pasa nada raro
         pendiente.delete()
 
-        messages.success(request, f'"{libro.titulo}" fue añadido a tu biblioteca desde Pendientes 🤎')
+        messages.success(request, f'"{libro.titulo}" fue enviado a tu biblioteca 🤎')
         return redirect('biblioteca')
+
+    # Si alguien entra por GET, lo mandamos de vuelta
+    return redirect('pendientes')
 
     # Confirmación opcional (si quieres una página intermedia)
     return render(request, 'biblioteca/confirmar_pendiente_a_biblioteca.html', {
