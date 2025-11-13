@@ -5,13 +5,14 @@ body {
 }
 
 .hero {
-    background-image: url('https://tse1.mm.bing.net/th/id/OIP.dVIq2m02P45-cvvcTolRvgHaE7?rs=1&pid=ImgDetMain&o=7&rm=3');
+    background-image: url('../img/hero-inicio.jpg'); 
     background-size: cover;
     background-position: center;
     padding: 6rem 1rem;
     color: #6a4e42;
     text-align: center;
 }
+
 
 .hero-text {
     background-color: rgba(255, 255, 255, 0.75);
