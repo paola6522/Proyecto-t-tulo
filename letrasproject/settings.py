@@ -161,6 +161,7 @@ MIDDLEWARE = [
     ...
 ]
 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 
