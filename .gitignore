@@ -1,0 +1,9 @@
+# Carpetas a ignorar
+env/
+__pycache__/
+staticfiles/
+*.pyc
+*.log
+
+# PERMITIR static/css
+!static/css/
