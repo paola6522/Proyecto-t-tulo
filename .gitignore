@@ -5,5 +5,8 @@ staticfiles/
 *.pyc
 *.log
 
-# PERMITIR static/css
-!static/css/
+# NO ignorar nada de la carpeta static
+!static/
+!static/**
+
+

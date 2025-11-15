@@ -1,0 +1,72 @@
+/* Fondo general y tipografía base */
+body {
+    background-color: #fdf8f4;      /* igual al diario */
+    font-family: 'Georgia', serif;  /* escritura elegante */
+}
+
+/* ====== Título principal ====== */
+.title-cozy {
+    font-family: 'Georgia', serif;  /* misma letra que diario */
+    font-weight: 700;               /* negrita */
+    font-size: 2rem;                /* tamaño destacado */
+    color: #7a4e2d;                 /* marrón cálido */
+    margin-bottom: 2rem;
+}
+
+/* Formulario de selección */
+.form-label {
+    font-weight: bold;
+    color: #7a4e2d;
+}
+
+.form-select {
+    border-radius: 50px;
+    border: 1px solid #d8cfc4;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    background-color: #fff;
+}
+
+/* Botones cozy */
+.btn,
+.btn-outline-primary {
+    border-radius: 50px;
+    padding: 0.7rem 1.8rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-outline-primary {
+    color: #5b6fa0;
+    border: 2px solid #5b6fa0;
+    background-color: #ffffff;
+}
+
+.btn-outline-primary:hover {
+    background-color: #5b6fa0;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Tarjetas de recomendaciones */
+.card {
+    background-color: #ffffff;
+    border: 1px solid #e0d7cc;
+    border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+
+.card h5 {
+    color: #7a4e2d;
+    font-weight: 600;
+}
+
+
+
+

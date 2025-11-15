@@ -1,0 +1,110 @@
+/* Fondo general y tipografía elegante */
+body.bg-cream {
+    background-color: #fdf8f4;
+    font-family: 'Georgia', serif;
+}
+
+/* Contenedor blanco (para formularios u otras secciones) */
+.form-container {
+    background-color: #ffffff;
+    border: 2px solid #e0d7cc;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* Títulos principales */
+.title-cozy {
+    color: #7a4e2d;
+    font-weight: 700;
+    font-family: 'Georgia', serif;
+}
+
+/* Etiquetas de formularios (incluye las de Recomendaciones) */
+.form-label {
+    font-weight: bold;
+    color: #7a4e2d;
+    font-family: 'Georgia', serif;
+}
+
+/* Campos de texto y select con borde redondeado */
+.form-control,
+.form-select {
+    border-radius: 50px;
+    border: 1px solid #d8cfc4;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    background-color: #fff;
+}
+
+/* Botones generales con estilo cozy */
+.btn-custom,
+.btn-outline-rose,
+.btn-outline-brown,
+.btn-outline-primary {
+    border-radius: 30px;
+    padding: 0.5rem 1.5rem;
+}
+
+/* Botón primario (azul suave) para búsqueda o volver */
+.btn-outline-primary {
+    border-radius: 30px;
+    padding: 0.5rem 1.5rem;
+}
+.btn-outline-primary:hover {
+    background-color: #5c6d70;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Botón guardar (rosa cálido) */
+.btn-outline-rose {
+    color: #fff;
+    background-color: #d46b8e;
+    border: 2px solid #d46b8e;
+}
+.btn-outline-rose:hover {
+    background-color: #b94d70;
+    border-color: #b94d70;
+    transform: translateY(-2px);
+}
+
+/* Botón cancelar o marrón cálido */
+.btn-outline-brown {
+    color: #fff;
+    background-color: #7a4e2d;
+    border: 2px solid #7a4e2d;
+}
+.btn-outline-brown:hover {
+    background-color: #5d3820;
+    border-color: #5d3820;
+    transform: translateY(-2px);
+}
+
+/* Tarjetas (para diarios o recomendaciones) */
+.card {
+    background-color: #ffffff;
+    border: 1px solid #e0d7cc;
+    border-radius: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+
+.card h5 {
+    color: #7a4e2d;
+    font-weight: 600;
+}
+
+
+
+
+
+
+
+
+
+
