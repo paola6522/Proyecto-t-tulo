@@ -10,7 +10,6 @@
     
     <!-- CSS personalizado -->
     <link href="{% static 'biblioteca/css/inicio.css' %}" rel="stylesheet">
-
 </head>
 <body>
 
@@ -38,10 +37,29 @@
     </div>
 
     <!-- Portada -->
-    <header class="hero text-center">
-        <div class="hero-text">
-            <h1 class="display-4">Mi rincón de letras y té</h1>
-            <p class="lead fst-italic">“A veces, leemos para saber que no estamos solos.” – William Nicholson</p>
+    <header class="hero-section position-relative mb-5" style="min-height: 330px;">
+
+        <!-- Imagen -->
+        <img 
+            src="https://scontent-sea1-1.cdninstagram.com/v/t51.2885-15/324616395_6073640080035380_6958269099533367558_n.jpg?stp=dst-jpg_e35&_nc_ht=scontent-sea1-1.cdninstagram.com&_nc_cat=101&_nc_ohc=s9oRst9pU48Q7kNvgE5ZykG&_nc_tp=1&edm=AGenr6EBAAAA&ccb=7-5&oh=00_AYBVtnEibcsM7Xw1jwZ_FBFXB-HW7xD6FsveHG1V88e5Yw&oe=670FA5A2&_nc_sid=5e46a9"
+            class="w-100 d-block"
+            style="max-height: 450px; object-fit: cover; border-bottom: 3px solid #e5d3cb;"
+        >
+
+        <!-- Cuadro con título y frase -->
+        <div class="position-absolute top-50 start-50 translate-middle text-center p-4"
+             style="background: rgba(255, 255, 255, 0.9); 
+                    border-radius: 15px; 
+                    max-width: 650px;
+                    width: 90%;
+                    backdrop-filter: blur(3px);
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+
+            <h1 class="fw-bold" style="color:#5a463e;">Mi rincón de letras y té</h1>
+
+            <p class="fst-italic mt-2" style="color:#6a4e42;">
+                “A veces, leemos para saber que no estamos solos.” – William Nicholson
+            </p>
         </div>
     </header>
 
