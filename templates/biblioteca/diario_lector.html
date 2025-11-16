@@ -36,7 +36,7 @@
     <div class="row justify-content-center">
         {% for entrada in diarios %}
         <div class="col-md-8 mb-4">
-            <div class="card p-4 shadow-sm libro-card">
+            <div class="card p-4 shadow-sm libro-card" style="background:#f3efea; border:1px solid #e0d9d2;">
                 <h5 class="text-brown fw-bold">{{ entrada.libro_leido.titulo }}</h5>
                 <p class="mb-1"><strong>Leído el:</strong> {{ entrada.libro_leido.fecha_fin }}</p>
                 <p class="mb-1"><strong>Puntuación:</strong> {{ entrada.puntuacion }} ⭐</p>
