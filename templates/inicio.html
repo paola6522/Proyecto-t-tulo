@@ -14,11 +14,11 @@
 <body>
 
     <!-- Ícono de usuario (arriba a la derecha) -->
-    <div class="position-absolute top-0 end-0 p-3">
+    <div class="position-absolute top-0 end-0 p-3" style="z-index: 1050;">
         {% if user.is_authenticated %}
         <div class="dropdown">
-            <button class="btn btn-light border dropdown-toggle rounded-pill d-flex align-items-center gap-2 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-person-circle"></i>
+            <button class="btn btn-light border dropdown-toggle rounded-pill d-flex align-items-center gap-2 shadow-sm"
+                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 {{ user.username }}
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm">
@@ -37,13 +37,13 @@
     </div>
 
     <!-- Portada -->
-    <header class="hero-section position-relative mb-5" style="min-height: 330px;">
+    <header class="hero-section position-relative mb-5" style="min-height: 320px;">
 
         <!-- Imagen -->
         <img 
-            src="https://scontent-sea1-1.cdninstagram.com/v/t51.2885-15/324616395_6073640080035380_6958269099533367558_n.jpg?stp=dst-jpg_e35&_nc_ht=scontent-sea1-1.cdninstagram.com&_nc_cat=101&_nc_ohc=s9oRst9pU48Q7kNvgE5ZykG&_nc_tp=1&edm=AGenr6EBAAAA&ccb=7-5&oh=00_AYBVtnEibcsM7Xw1jwZ_FBFXB-HW7xD6FsveHG1V88e5Yw&oe=670FA5A2&_nc_sid=5e46a9"
+            src="https://cdn.pixabay.com/photo/2016/02/03/17/54/book-1177574_960_720.jpg"
             class="w-100 d-block"
-            style="max-height: 450px; object-fit: cover; border-bottom: 3px solid #e5d3cb;"
+            style="max-height: 430px; object-fit: cover; border-bottom: 3px solid #e5d3cb;"
         >
 
         <!-- Cuadro con título y frase -->
