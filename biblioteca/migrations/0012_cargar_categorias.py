@@ -3,11 +3,26 @@
 from django.db import migrations
 
 
+generos = [
+    "Acción", "Aventura", "Comedia", "Drama", "Romance", "Fantasía",
+    "Ciencia Ficción", "Misterio", "Thriller", "Horror", "Histórico",
+    "Bélico", "Psicológico", "Magia", "Sobrenatural", "Distopía",
+    "Escolar", "Reencarnación", "Vida cotidiana", "Mitología",
+    "Viajes en el tiempo", "LGTB+", "Realismo mágico", "Juvenil",
+    "Adulto", "Cuentos", "Manga/Manhwa", "Isekai", "Ensayo"
+]
+
+def cargar_categorias(apps, schema_editor):
+    Categoria = apps.get_model("biblioteca", "Categoria")
+    for nombre in generos:
+        Categoria.objects.get_or_create(nombre=nombre)
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('biblioteca', '0011_libro_isbn_libroleido_isbn_pendiente'),
+        ("biblioteca", "0011_libro_isbn_libroleido_isbn_pendiente"),  # ← aquí va el archivo anterior
     ]
 
     operations = [
+        migrations.RunPython(cargar_categorias),
     ]
