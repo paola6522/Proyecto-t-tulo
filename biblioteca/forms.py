@@ -27,21 +27,27 @@ GENEROS_PREDEFINIDOS = [
 class EmailOrUsernameLoginForm(AuthenticationForm):
     username = forms.CharField(
         label="Usuario o Correo",
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Usuario o correo electrónico'})
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Usuario o correo electrónico'
+        })
     )
 
 # FORMULARIO DE REGISTRO DE USUARIO
 class RegistroUsuarioForm(UserCreationForm):
     email = forms.EmailField(
         required=True,
-        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Correo electrónico'})
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Correo electrónico'
+        })
     )
 
-    # Lista de nombres reservados (puedes ampliarla)
+    # Lista de nombres reservados
     RESERVED_USERNAMES = ["admin", "root", "user", "test", "support", "moderator", "staff"]
 
     def clean_username(self):
-        username = self.cleaned_data.get("username")
+        username = self.cleaned_data.get("username") or ""
 
         # Solo permitir letras, números y algunos símbolos seguros
         if not re.match(r'^[\w.@+-]+$', username):
@@ -54,7 +60,12 @@ class RegistroUsuarioForm(UserCreationForm):
         return username
 
     def clean_email(self):
-        email = self.cleaned_data.get("email")
+        email = self.cleaned_data.get("email") or ""
+
+        # Si por alguna razón llega vacío, que lo trate como error de campo requerido
+        if not email:
+            raise ValidationError("Debes ingresar un correo electrónico.")
+
         dominio = email.split('@')[-1]
 
         # Bloquear duplicados
@@ -68,7 +79,7 @@ class RegistroUsuarioForm(UserCreationForm):
         return email
 
     def clean_password1(self):
-        password = self.cleaned_data.get("password1")
+        password = self.cleaned_data.get("password1") or ""
 
         comunes = ["123456", "password", "qwerty", "admin"]
         if password.lower() in comunes:
@@ -86,10 +97,12 @@ class RegistroUsuarioForm(UserCreationForm):
         if not re.search(r"\d", password):
             raise ValidationError("Debe contener al menos un número.")
 
-        if not re.search(r"[^\w\s]|_", password):  
-            raise ValidationError("Debe contener al menos un carácter especial (ej. !, @, #, $, %, &, *, ?, _, -).")
+        if not re.search(r"[^\w\s]|_", password):
+            raise ValidationError(
+                "Debe contener al menos un carácter especial (ej. !, @, #, $, %, &, *, ?, _, -)."
+            )
 
-        if re.search(r"(.)\1\1", password):  
+        if re.search(r"(.)\1\1", password):
             raise ValidationError("No puede contener más de 3 caracteres iguales seguidos.")
 
         return password
@@ -109,7 +122,6 @@ class RegistroUsuarioForm(UserCreationForm):
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
             field.widget.attrs['placeholder'] = field.label
-
 
 #FORMULARIO PARA REGISTRAR UN LIBRO LEÍDO
 class LibroLeidoForm(forms.ModelForm):
