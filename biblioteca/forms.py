@@ -2,7 +2,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm # Formulario base para registrar usuarios y para autenticación
 from django.contrib.auth.models import User # Modelo de usuario de Django
-from .models import LibroLeido, Libro, DiarioLector # Modelos creados en tu app
+from .models import LibroLeido, Categoria, DiarioLector # Modelos creados en tu app
 from django.core.exceptions import ValidationError
 import re
 
@@ -15,36 +15,13 @@ ESTADOS = [
     ('abandonado', 'Abandonado'),
 ]
 
-CATEGORIA_CHOICES = [
-    ("Acción", "Acción"),
-    ("Aventura", "Aventura"),
-    ("Comedia", "Comedia"),
-    ("Drama", "Drama"),
-    ("Romance", "Romance"),
-    ("Fantasía", "Fantasía"),
-    ("Ciencia Ficción", "Ciencia Ficción"),
-    ("Misterio", "Misterio"),
-    ("Thriller", "Thriller"),
-    ("Horror", "Horror"),
-    ("Histórico", "Histórico"),
-    ("Bélico", "Bélico"),
-    ("Psicológico", "Psicológico"),
-    ("Magia", "Magia"),
-    ("Sobrenatural", "Sobrenatural"),
-    ("Distopía", "Distopía"),
-    ("Escolar", "Escolar"),
-    ("Reencarnación", "Reencarnación"),
-    ("Vida cotidiana", "Vida cotidiana"),
-    ("Mitología", "Mitología"),
-    ("Viajes en el tiempo", "Viajes en el tiempo"),
-    ("LGTB+", "LGTB+"),
-    ("Realismo mágico", "Realismo mágico"),
-    ("Juvenil", "Juvenil"),
-    ("Adulto", "Adulto"),
-    ("Cuentos", "Cuentos"),
-    ("Manga/Manhwa", "Manga/Manhwa"),
-    ("Isekai", "Isekai"),
-    ("Ensayo", "Ensayo"),
+GENEROS_PREDEFINIDOS = [
+    "Acción", "Aventura", "Comedia", "Drama", "Romance", "Fantasía",
+    "Ciencia Ficción", "Misterio", "Thriller", "Horror", "Histórico",
+    "Bélico", "Psicológico", "Magia", "Sobrenatural", "Distopía",
+    "Escolar", "Reencarnación", "Vida cotidiana", "Mitología",
+    "Viajes en el tiempo", "LGTB+", "Realismo mágico", "Juvenil",
+    "Adulto", "Cuentos", "Manga/Manhwa", "Isekai", "Ensayo",
 ]
 
 class EmailOrUsernameLoginForm(AuthenticationForm):
@@ -136,104 +113,65 @@ class RegistroUsuarioForm(UserCreationForm):
 
 #FORMULARIO PARA REGISTRAR UN LIBRO LEÍDO
 class LibroLeidoForm(forms.ModelForm):
+    # Declaramos el campo usando ModelMultipleChoiceField
+    categoria = forms.ModelMultipleChoiceField(
+        queryset=Categoria.objects.none(),   # se rellena en __init__
+        required=False,
+        widget=forms.SelectMultiple(attrs={
+            "class": "form-select",
+            "size": 6,  # para que se vean varias a la vez
+        }),
+        label="Categoría",
+    )
+
     class Meta:
         model = LibroLeido
-        exclude = ['usuario']
+        exclude = ["usuario"]
         widgets = {
-            'titulo': forms.TextInput(attrs={
-                'class': 'form-control rounded-3',
+            "titulo": forms.TextInput(attrs={
+                "class": "form-control rounded-3",
             }),
-            'autor': forms.TextInput(attrs={
-                'class': 'form-control rounded-3',
+            "autor": forms.TextInput(attrs={
+                "class": "form-control rounded-3",
             }),
-            'isbn': forms.TextInput(attrs={
-                'class': 'form-control rounded-3',
-                'placeholder': 'Opcional. Ej: 9788478884452',
+            "isbn": forms.TextInput(attrs={
+                "class": "form-control rounded-3",
+                "placeholder": "Opcional. Ej: 9788478884452",
             }),
-            'categoria': forms.SelectMultiple(attrs={
-                'class': 'form-select',
-                'size': 6,
+            # 👇 OJO: aquí ya NO pongas widget para 'categoria'
+            "resumen": forms.Textarea(attrs={
+                "class": "form-control rounded-3",
+                "rows": 4,
             }),
-            'resumen': forms.Textarea(attrs={
-                'class': 'form-control rounded-3',
-                'rows': 4,
+            "estado": forms.Select(attrs={
+                "class": "form-select rounded-3",
             }),
-            'estado': forms.Select(attrs={
-                'class': 'form-select rounded-3',
-            }),
-            'fecha_inicio': forms.DateInput(
-                format='%Y-%m-%d',
-                attrs={'class': 'form-control', 'type': 'date'}
+            "fecha_inicio": forms.DateInput(
+                format="%Y-%m-%d",
+                attrs={"class": "form-control", "type": "date"}
             ),
-            'fecha_fin': forms.DateInput(
-                format='%Y-%m-%d',
-                attrs={'class': 'form-control', 'type': 'date'}
+            "fecha_fin": forms.DateInput(
+                format="%Y-%m-%d",
+                attrs={"class": "form-control", "type": "date"}
             ),
-            'pdf': forms.ClearableFileInput(attrs={
-                'class': 'form-control',
+            "pdf": forms.ClearableFileInput(attrs={
+                "class": "form-control",
             }),
-            'link': forms.URLInput(attrs={
-                'class': 'form-control rounded-3',
-                'placeholder': 'Opcional. http:// o https://',
+            "link": forms.URLInput(attrs={
+                "class": "form-control rounded-3",
+                "placeholder": "Opcional. http:// o https://",
             }),
         }
-        
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # formatos válidos desde el input
-        self.fields['fecha_inicio'].input_formats = ['%Y-%m-%d']
-        self.fields['fecha_fin'].input_formats = ['%Y-%m-%d']
+        # 1) Aseguramos que existan las categorías en BD
+        for nombre in GENEROS_PREDEFINIDOS:
+            Categoria.objects.get_or_create(nombre=nombre)
 
-        # 🔹 IMPORTANTE: solo seteamos initial cuando NO es formulario enviado (GET, no POST)
-        if not self.is_bound and self.instance and self.instance.pk:
-            if self.instance.fecha_inicio:
-                self.initial['fecha_inicio'] = self.instance.fecha_inicio.strftime('%Y-%m-%d')
-            if self.instance.fecha_fin:
-                self.initial['fecha_fin'] = self.instance.fecha_fin.strftime('%Y-%m-%d')
-
-    def clean(self):
-        cleaned_data = super().clean()
-        fi = cleaned_data.get("fecha_inicio")
-        ff = cleaned_data.get("fecha_fin")
-        if fi and ff and ff < fi:
-            raise ValidationError("La fecha de término no puede ser anterior a la fecha de inicio.")
-        return cleaned_data
-
-    def clean_titulo(self):
-        t = (self.cleaned_data.get("titulo") or "").strip()
-        if len(t) < 2:
-            raise ValidationError("El título debe tener al menos 2 caracteres.")
-        return t
-
-    def clean_autor(self):
-        a = (self.cleaned_data.get("autor") or "").strip()
-        if len(a) < 2:
-            raise ValidationError("El autor debe tener al menos 2 caracteres.")
-        return a
-
-    def clean_resumen(self):
-        r = self.cleaned_data.get("resumen")
-        if r and len(r.strip()) < 10:
-            raise ValidationError("El resumen es demasiado corto, escribe al menos 10 caracteres.")
-        return r
-
-    def clean_link(self):
-        link = self.cleaned_data.get("link")
-        if link and not (link.startswith("http://") or link.startswith("https://")):
-            raise ValidationError("El enlace debe comenzar con http:// o https://")
-        return link
-
-    def clean_isbn(self):
-        isbn = (self.cleaned_data.get("isbn") or "").strip()
-        if not isbn:
-            return ""
-        normalized = isbn.replace("-", "").replace(" ", "")
-        if not normalized.isdigit():
-            raise ValidationError("El ISBN debe contener solo números (puedes usar guiones o espacios).")
-        if len(normalized) not in (10, 13):
-            raise ValidationError("El ISBN debe tener 10 o 13 dígitos.")
-        return normalized
+        # 2) Asignamos el queryset actualizado al campo
+        self.fields["categoria"].queryset = Categoria.objects.all().order_by("nombre")
 
     
 #FORMULARIO PARA EL DIARIO LECTOR 
