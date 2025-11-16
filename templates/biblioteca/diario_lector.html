@@ -11,13 +11,17 @@
 
 <!-- Botón volver -->
 <div class="d-flex justify-content-end me-4 mt-3">
-    <a href="{% url 'inicio' %}" class="btn btn-outline-primary rounded-pill">☘︎ ݁˖ Volver al inicio</a>
+    <a href="{% url 'inicio' %}" class="btn btn-outline-primary rounded-pill">
+        ☘︎ ݁˖ Volver al inicio
+    </a>
 </div>
 
 <div class="container mt-4">
 
     <!-- Título -->
-    <h2 class="text-center mb-4 title-cozy">🧸☕📜🍂 Mi Diario Lector 🍂📜☕🧸</h2>
+    <h2 class="text-center mb-4 title-cozy">
+        🧸☕📜🍂 Mi Diario Lector 🍂📜☕🧸
+    </h2>
 
     <!-- Buscador -->
     <form class="d-flex mb-4 justify-content-center" method="get">
@@ -29,38 +33,51 @@
 
     <!-- Botón agregar -->
     <div class="text-center mb-5">
-        <a href="{% url 'agregar_entrada' %}" class="btn btn-outline-success btn-custom">+ Agregar entrada</a>
+        <a href="{% url 'agregar_entrada' %}" class="btn btn-outline-success btn-custom">
+            + Agregar entrada
+        </a>
     </div>
 
     <!-- Entradas -->
     <div class="row justify-content-center">
         {% for entrada in diarios %}
         <div class="col-md-8 mb-4">
-            <div class="card p-4 shadow-sm libro-card" style="background:#f3efea; border:1px solid #e0d9d2;">
-                <h5 class="text-brown fw-bold">{{ entrada.libro_leido.titulo }}</h5>
-                <p class="mb-1"><strong>Leído el:</strong> {{ entrada.libro_leido.fecha_fin }}</p>
-                <p class="mb-1"><strong>Puntuación:</strong> {{ entrada.puntuacion }} ⭐</p>
+            <div class="card p-4 shadow-sm rounded-4"
+                 style="background:#f3efea; border:1px solid #e0d9d2;">
+                
+                <h5 class="text-brown fw-bold">
+                    {{ entrada.libro_leido.titulo }}
+                </h5>
 
-        <!-- Botón modal -->
-            <button class="btn btn-outline-secondary btn-custom"
-                data-bs-toggle="modal" data-bs-target="#modalEntrada{{ entrada.id }}">
-                🕮 Ver más
-            </button>
+                <p class="mb-1">
+                    <strong>Leído el:</strong> {{ entrada.libro_leido.fecha_fin }}
+                </p>
+
+                <p class="mb-3">
+                    <strong>Puntuación:</strong> {{ entrada.puntuacion }} ⭐
+                </p>
+
+                <button class="btn btn-outline-secondary btn-custom rounded-pill"
+                        data-bs-toggle="modal" data-bs-target="#modalEntrada{{ entrada.id }}">
+                    🕮 Ver más
+                </button>
+            </div>
         </div>
-    </div>
 
-
-        <!-- Modal de detalles -->
+        <!-- Modal -->
         <div class="modal fade" id="modalEntrada{{ entrada.id }}" tabindex="-1"
              aria-labelledby="modalEntradaLabel{{ entrada.id }}" aria-hidden="true">
             <div class="modal-dialog modal-lg">
-                <div class="modal-content cozy-modal">
+                <div class="modal-content cozy-modal" style="background:#fdf8f3; border-radius: 15px;">
+
                     <div class="modal-header border-0">
-                        <h5 class="modal-title text-brown" id="modalEntradaLabel{{ entrada.id }}">
+                        <h5 class="modal-title text-brown fw-bold">
                             {{ entrada.libro_leido.titulo }}
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
+
                     <div class="modal-body">
                         <p><strong>Leído el:</strong> {{ entrada.libro_leido.fecha_fin }}</p>
                         <p><strong>Puntuación:</strong> {{ entrada.puntuacion }} ⭐</p>
@@ -68,16 +85,30 @@
                         <p><strong>Punto clave:</strong> {{ entrada.punto_clave|linebreaks }}</p>
                         <p><strong>Nota personal:</strong> {{ entrada.nota_personal|linebreaks }}</p>
                     </div>
-                    <div class="modal-footer border-0">
-                        <a href="{% url 'editar_entrada' entrada.pk %}" class="btn btn-outline-secondary btn-custom">🖋 Editar</a>
-                        <a href="{% url 'eliminar_entrada' entrada.pk %}" class="btn btn-outline-secondary btn-custom">🗑 Eliminar</a>
-                        <button type="button" class="btn btn-outline-secondary btn-custom" data-bs-dismiss="modal">Cerrar</button>
+
+                    <div class="modal-footer border-0 d-flex justify-content-between">
+                        <a href="{% url 'editar_entrada' entrada.pk %}" 
+                           class="btn btn-outline-secondary btn-custom rounded-pill">
+                            🖋 Editar
+                        </a>
+
+                        <a href="{% url 'eliminar_entrada' entrada.pk %}" 
+                           class="btn btn-outline-secondary btn-custom rounded-pill">
+                            🗑 Eliminar
+                        </a>
+
+                        <button type="button" class="btn btn-outline-secondary btn-custom rounded-pill"
+                                data-bs-dismiss="modal">
+                            Cerrar
+                        </button>
                     </div>
+
                 </div>
             </div>
         </div>
+
         {% empty %}
-        <p class="text-center text-muted">No hay entradas aún.</p>
+        <p class="text-center text-muted mt-5">Todavía no tienes entradas 🥺</p>
         {% endfor %}
     </div>
 </div>
@@ -86,3 +117,4 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

@@ -10,12 +10,19 @@
 <body class="bg-cream">
 
 <div class="container mt-5">
-    <div class="form-container mx-auto" style="max-width:600px;">
-        <h2 class="text-center mb-4">🪶📜 Agregar nuevo libro</h2>
+    <div class="form-container mx-auto p-4 rounded-4 shadow-sm"
+         style="
+            max-width:600px;
+            background:#f8f4ef;
+            border:1px solid #e4d8cf;
+         ">
+        <h2 class="text-center mb-4" style="color:#6a4e42; font-weight:700;">
+            🪶📜 Agregar nuevo libro
+        </h2>
 
         {# Errores de validación #}
         {% if form.errors or form.non_field_errors %}
-            <div class="alert alert-danger">
+            <div class="alert alert-danger rounded-3">
                 {{ form.non_field_errors }}
                 {% for field in form %}
                     {% for error in field.errors %}
@@ -30,73 +37,97 @@
 
             <!-- Título -->
             <div class="mb-3">
-                <label class="form-label">{{ form.titulo.label }}</label>
+                <label class="form-label fw-semibold" style="color:#6a4e42;">
+                    {{ form.titulo.label }}
+                </label>
                 {{ form.titulo }}
             </div>
 
             <!-- Autor -->
             <div class="mb-3">
-                <label class="form-label">{{ form.autor.label }}</label>
+                <label class="form-label fw-semibold" style="color:#6a4e42;">
+                    {{ form.autor.label }}
+                </label>
                 {{ form.autor }}
             </div>
 
             <!-- ISBN -->
             <div class="mb-3">
-                <label class="form-label">{{ form.isbn.label }}</label>
+                <label class="form-label fw-semibold" style="color:#6a4e42;">
+                    {{ form.isbn.label }}
+                </label>
                 {{ form.isbn }}
-                <div class="form-text">
+                <div class="form-text" style="color:#8b7769;">
                     Opcional. Si lo agregas, mejora la precisión de las recomendaciones. 📚
                 </div>
             </div>
 
             <!-- Categorías -->
             <div class="mb-3">
-                <label class="form-label">{{ form.categoria.label }}</label>
+                <label class="form-label fw-semibold" style="color:#6a4e42;">
+                    {{ form.categoria.label }}
+                </label>
                 {{ form.categoria }}
             </div>
 
             <!-- Resumen -->
             <div class="mb-3">
-                <label class="form-label">{{ form.resumen.label }}</label>
+                <label class="form-label fw-semibold" style="color:#6a4e42;">
+                    {{ form.resumen.label }}
+                </label>
                 {{ form.resumen }}
             </div>
 
             <!-- Estado -->
             <div class="mb-3">
-                <label class="form-label">{{ form.estado.label }}</label>
+                <label class="form-label fw-semibold" style="color:#6a4e42;">
+                    {{ form.estado.label }}
+                </label>
                 {{ form.estado }}
             </div>
 
             <!-- Fechas -->
             <div class="row mb-3">
                 <div class="col">
-                    <label class="form-label">{{ form.fecha_inicio.label }}</label>
+                    <label class="form-label fw-semibold" style="color:#6a4e42;">
+                        {{ form.fecha_inicio.label }}
+                    </label>
                     {{ form.fecha_inicio }}
                 </div>
                 <div class="col">
-                    <label class="form-label">{{ form.fecha_fin.label }}</label>
+                    <label class="form-label fw-semibold" style="color:#6a4e42;">
+                        {{ form.fecha_fin.label }}
+                    </label>
                     {{ form.fecha_fin }}
                 </div>
             </div>
 
             <!-- PDF -->
             <div class="mb-3">
-                <label class="form-label">{{ form.pdf.label }}</label>
+                <label class="form-label fw-semibold" style="color:#6a4e42;">
+                    {{ form.pdf.label }}
+                </label>
                 {{ form.pdf }}
             </div>
 
             <!-- Link -->
             <div class="mb-3">
-                <label class="form-label">{{ form.link.label }}</label>
+                <label class="form-label fw-semibold" style="color:#6a4e42;">
+                    {{ form.link.label }}
+                </label>
                 {{ form.link }}
             </div>
 
             <!-- Botones -->
-            <div class="text-center mt-4">
-                <button type="submit" class="btn btn-outline-secondary btn-custom">
+            <div class="text-center mt-4 d-flex justify-content-center gap-3">
+                <button type="submit"
+                        class="btn rounded-pill px-4 py-2"
+                        style="border:2px solid #6a4e42; color:#6a4e42;">
                     Guardar
                 </button>
-                <a href="{% url 'biblioteca' %}" class="btn btn-outline-secondary btn-custom">
+                <a href="{% url 'biblioteca' %}"
+                   class="btn rounded-pill px-4 py-2"
+                   style="border:2px solid #b8a79c; color:#7c6a5e;">
                     Cancelar
                 </a>
             </div>

@@ -35,17 +35,21 @@
 </div>
 {% endif %}
 
-
-
 <!-- Botón volver -->
 <div class="d-flex justify-content-end me-4 mt-3">
-    <a href="{% url 'inicio' %}" class="btn btn-outline-primary rounded-pill">☘︎ ݁˖ Volver al inicio</a>
+    <a href="{% url 'inicio' %}" class="btn btn-outline-primary rounded-pill">
+        ☘︎ ݁˖ Volver al inicio
+    </a>
 </div>
 
-<!-- boton pendientes-->
-<div class="text-center mb-5"><a href="{% url 'pendientes' %}" class="btn btn-outline-secondary rounded-pill ms-4 mt-3">Ver mis libros pendientes</a></div>
+<!-- Botón pendientes -->
+<div class="text-center mb-4 mt-2">
+    <a href="{% url 'pendientes' %}" class="btn btn-outline-secondary rounded-pill">
+        Ver mis libros pendientes
+    </a>
+</div>
 
-<div class="container mt-4">
+<div class="container mt-3">
 
     <!-- Título -->
     <h2 class="text-center mb-4 title-cozy">📜🍂🥮🤎 Mi Biblioteca 🤎🥮🍂📜</h2>
@@ -59,19 +63,25 @@
     </form>
 
     <!-- Botón agregar -->
-    <div class="text-center mb-5">
-        <a href="{% url 'agregar_libro' %}" class="btn btn-outline-success btn-custom">+ Agregar Libro</a>
+    <div class="text-center mb-4">
+        <a href="{% url 'agregar_libro' %}" class="btn btn-outline-success btn-custom">
+            + Agregar Libro
+        </a>
     </div>
 
     <!-- Tarjetas de libros -->
     <div class="row justify-content-center">
         {% for libro in libros %}
         <div class="col-md-5 mb-4">
-            <div class="card shadow-sm libro-card" style="background:#f3efea; border:1px solid #e0d9d2;">
+            <div class="card shadow-sm libro-card rounded-4"
+                 style="background:#f3efea; border:1px solid #e0d9d2;">
                 <div class="card-body">
                     <h5 class="text-brown fw-bold">{{ libro.titulo }}</h5>
-                    <p class="mb-1"><strong>Autor:</strong> {{ libro.autor }}</p>
-                    <p class="mb-3"><strong>Categoría:</strong>
+                    <p class="mb-1">
+                        <strong>Autor:</strong> {{ libro.autor }}
+                    </p>
+                    <p class="mb-3">
+                        <strong>Categoría:</strong>
                         {% if libro.categoria.all %}
                             {% for cat in libro.categoria.all %}
                                 {{ cat.nombre }}{% if not forloop.last %}, {% endif %}
@@ -80,10 +90,20 @@
                             (Sin categoría)
                         {% endif %}
                     </p>
-                    <div class="container mt-4">
-                        <a href="{% url 'ver_libro' libro.pk %}" class="btn btn-outline-secondary btn-custom">🕮 Ver más</a>
-                        <a href="{% url 'editar_libro' libro.pk %}" class="btn btn-outline-secondary btn-custom">🖋 Editar</a>
-                        <a href="{% url 'eliminar_libro' libro.pk %}" class="btn btn-outline-secondary btn-custom">🗑 Eliminar</a>
+
+                    <div class="d-flex flex-wrap gap-2 mt-2">
+                        <a href="{% url 'ver_libro' libro.pk %}"
+                           class="btn btn-outline-secondary btn-sm rounded-pill btn-custom">
+                            🕮 Ver más
+                        </a>
+                        <a href="{% url 'editar_libro' libro.pk %}"
+                           class="btn btn-outline-secondary btn-sm rounded-pill btn-custom">
+                            🖋 Editar
+                        </a>
+                        <a href="{% url 'eliminar_libro' libro.pk %}"
+                           class="btn btn-outline-secondary btn-sm rounded-pill btn-custom">
+                            🗑 Eliminar
+                        </a>
                     </div>
                 </div>
             </div>
@@ -96,6 +116,7 @@
 
 </body>
 </html>
+
 
 
 

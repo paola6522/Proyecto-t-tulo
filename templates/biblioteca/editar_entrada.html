@@ -20,51 +20,90 @@
 <body class="bg-cream">
 
 <div class="container py-5">
-    <div class="form-container mx-auto shadow-sm p-4 rounded-4" style="max-width: 700px;">
-        <h2 class="text-center title-cozy mb-4">🪶📜 Editar Entrada del Diario</h2>
+    <div class="form-container mx-auto shadow-sm p-4 rounded-4"
+         style="
+            max-width: 700px;
+            background: #f8f4ef;
+            border: 1px solid #e4d8cf;
+         ">
+        
+        <h2 class="text-center mb-4" style="color:#6a4e42; font-weight:700;">
+            🪶📜 Editar Entrada del Diario
+        </h2>
         
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
+            <!-- Libro seleccionado -->
             <div class="mb-3">
-                {{ form.libro_leido.label_tag }}
+                <label class="form-label fw-semibold" style="color:#6a4e42;">
+                    {{ form.libro_leido.label }}
+                </label>
                 {{ form.libro_leido }}
             </div>
 
+            <!-- Frase icónica -->
             <div class="mb-3">
-                {{ form.frase_iconica.label_tag }}
+                <label class="form-label fw-semibold" style="color:#6a4e42;">
+                    {{ form.frase_iconica.label }}
+                </label>
                 {{ form.frase_iconica }}
             </div>
 
+            <!-- Punto clave -->
             <div class="mb-3">
-                {{ form.punto_clave.label_tag }}
+                <label class="form-label fw-semibold" style="color:#6a4e42;">
+                    {{ form.punto_clave.label }}
+                </label>
                 {{ form.punto_clave }}
             </div>
 
+            <!-- Nota personal -->
             <div class="mb-3">
-                {{ form.nota_personal.label_tag }}
+                <label class="form-label fw-semibold" style="color:#6a4e42;">
+                    {{ form.nota_personal.label }}
+                </label>
                 {{ form.nota_personal }}
             </div>
 
-            <!-- ⭐ Puntuación -->
-            <div class="mb-3">
-                <label class="form-label">Puntuación</label>
-                <div id="rating-stars" class="d-flex gap-2 justify-content-center mb-2">
+            <!-- ⭐ Puntuación estilo cozy -->
+            <div class="mb-3 text-center">
+                <label class="form-label fw-semibold" style="color:#6a4e42;">
+                    Puntuación
+                </label>
+                <div id="rating-stars" class="d-flex gap-2 justify-content-center mb-2 fs-3">
                     {% for i in "12345" %}
-                        <i class="bi bi-star-fill star {% if form.puntuacion.value >= forloop.counter %}selected{% endif %}" 
-                           data-value="{{ forloop.counter }}"></i>
+                        <i class="bi bi-star-fill star
+                            {% if form.puntuacion.value >= forloop.counter %}
+                                selected
+                            {% endif %}"
+                            data-value="{{ forloop.counter }}"
+                            style="cursor:pointer; color:#c0a79b;"></i>
                     {% endfor %}
                 </div>
-                <input type="hidden" name="puntuacion" id="id_puntuacion" value="{{ form.puntuacion.value|default:0 }}">
+
+                <input type="hidden" name="puntuacion" id="id_puntuacion"
+                       value="{{ form.puntuacion.value|default:0 }}">
             </div>
 
-            <div class="text-center mt-4">
-                <button type="submit" class="btn btn-outline-secondary btn-custom">Guardar cambios</button>
-                <a href="{% url 'diario_lector' %}" class="btn btn-outline-secondary btn-custom">Cancelar</a>
+            <!-- Botones -->
+            <div class="text-center mt-4 d-flex justify-content-center gap-3">
+                <button type="submit"
+                        class="btn rounded-pill px-4 py-2"
+                        style="border:2px solid #6a4e42; color:#6a4e42;">
+                    Guardar cambios
+                </button>
+
+                <a href="{% url 'diario_lector' %}"
+                   class="btn rounded-pill px-4 py-2"
+                   style="border:2px solid #b8a79c; color:#7c6a5e;">
+                    Cancelar
+                </a>
             </div>
         </form>
     </div>
 </div>
+
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
