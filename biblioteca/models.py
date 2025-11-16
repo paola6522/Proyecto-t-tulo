@@ -3,9 +3,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator, FileExtensionValidator
 from django.core.exceptions import ValidationError
 
-# ------------------------
 # Lista de opciones de estado
-# ------------------------
 ESTADO_LIBRO = [
     ('pendiente', 'Pendiente'),
     ('iniciado', 'Iniciado'),
@@ -14,20 +12,24 @@ ESTADO_LIBRO = [
     ('abandonado', 'Abandonado'),
 ]
 
-# ------------------------
+GENEROS = [
+    "Acción", "Aventura", "Comedia", "Drama", "Romance", "Fantasía",
+    "Ciencia Ficción", "Misterio", "Thriller", "Horror", "Histórico",
+    "Bélico", "Psicológico", "Magia", "Sobrenatural", "Distopía",
+    "Escolar", "Reencarnación", "Vida cotidiana", "Mitología", 
+    "Viajes en el tiempo", "LGTB+", "Realismo mágico", "Juvenil",
+    "Adulto", "Cuentos", "Manga/Manhwa", "Isekai", "Ensayo",
+]
+
 # Modelo Categoría (Género literario)
-# ------------------------
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100, unique=True, db_index=True)
 
     def __str__(self):
         return self.nombre
 
-
-# ------------------------
 # Modelo Libro (catálogo de libros agregados por usuario)
 # (opcional, útil si luego quieres normalizar tu biblioteca)
-# ------------------------
 class Libro(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=200)
@@ -45,18 +47,14 @@ class Libro(models.Model):
     def __str__(self):
         return self.titulo
 
-
-# ------------------------
 # Validador PDF
-# ------------------------
+
 def validar_pdf(value):
     if value.size > 5 * 1024 * 1024:  # 5MB
         raise ValidationError("El archivo no puede superar los 5 MB.")
 
 
-# ------------------------
 # Modelo LibroLeido (biblioteca personal del usuario)
-# ------------------------
 class LibroLeido(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     # Datos básicos del libro
@@ -97,10 +95,7 @@ class LibroLeido(models.Model):
     def __str__(self):
         return self.titulo
 
-
-# ------------------------
 # Modelo DiarioLector (notas, puntuaciones del usuario)
-# ------------------------
 class DiarioLector(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     libro_leido = models.ForeignKey(LibroLeido, on_delete=models.CASCADE)
@@ -117,9 +112,7 @@ class DiarioLector(models.Model):
         return f"Entrada {self.fecha} - {self.libro_leido.titulo}"
 
 
-# ------------------------
 # Modelo Pendiente (lista de deseos / “quiero leer”)
-# ------------------------
 class Pendiente(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     # Guardamos lo suficiente para reconstruir la tarjeta desde las recomendaciones

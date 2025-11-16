@@ -15,6 +15,38 @@ ESTADOS = [
     ('abandonado', 'Abandonado'),
 ]
 
+CATEGORIA_CHOICES = [
+    ("Acción", "Acción"),
+    ("Aventura", "Aventura"),
+    ("Comedia", "Comedia"),
+    ("Drama", "Drama"),
+    ("Romance", "Romance"),
+    ("Fantasía", "Fantasía"),
+    ("Ciencia Ficción", "Ciencia Ficción"),
+    ("Misterio", "Misterio"),
+    ("Thriller", "Thriller"),
+    ("Horror", "Horror"),
+    ("Histórico", "Histórico"),
+    ("Bélico", "Bélico"),
+    ("Psicológico", "Psicológico"),
+    ("Magia", "Magia"),
+    ("Sobrenatural", "Sobrenatural"),
+    ("Distopía", "Distopía"),
+    ("Escolar", "Escolar"),
+    ("Reencarnación", "Reencarnación"),
+    ("Vida cotidiana", "Vida cotidiana"),
+    ("Mitología", "Mitología"),
+    ("Viajes en el tiempo", "Viajes en el tiempo"),
+    ("LGTB+", "LGTB+"),
+    ("Realismo mágico", "Realismo mágico"),
+    ("Juvenil", "Juvenil"),
+    ("Adulto", "Adulto"),
+    ("Cuentos", "Cuentos"),
+    ("Manga/Manhwa", "Manga/Manhwa"),
+    ("Isekai", "Isekai"),
+    ("Ensayo", "Ensayo"),
+]
+
 class EmailOrUsernameLoginForm(AuthenticationForm):
     username = forms.CharField(
         label="Usuario o Correo",
@@ -120,6 +152,7 @@ class LibroLeidoForm(forms.ModelForm):
             }),
             'categoria': forms.SelectMultiple(attrs={
                 'class': 'form-select',
+                'size': 6,
             }),
             'resumen': forms.Textarea(attrs={
                 'class': 'form-control rounded-3',
@@ -144,7 +177,7 @@ class LibroLeidoForm(forms.ModelForm):
                 'placeholder': 'Opcional. http:// o https://',
             }),
         }
-
+        
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
