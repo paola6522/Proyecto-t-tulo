@@ -33,17 +33,15 @@ def registro_view(request):
         form = RegistroUsuarioForm(request.POST)
         if form.is_valid():
             usuario = form.save()
-            login(request, usuario)
-            messages.success(request, 'Tu cuenta ha sido creada con éxito. 💕')
-            return redirect('inicio')
+
+            messages.success(request, 'Tu cuenta ha sido creada con éxito.')
+            return redirect('login')  # NO login automático
         else:
-            # Para debug en desarrollo
             print("Errores del formulario:", form.errors)
     else:
         form = RegistroUsuarioForm()
 
     return render(request, 'registration/registro.html', {'form': form})
-
 
 # ------------------------
 # BIBLIOTECA (Listado de libros del usuario)
