@@ -13,6 +13,7 @@ admin.site.register(Libro)
 admin.site.register(LibroLeido)
 admin.site.register(DiarioLector)
 
+
 # -----------------------
 # Acción para eliminar usuarios e informar por correo
 # -----------------------

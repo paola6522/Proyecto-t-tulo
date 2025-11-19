@@ -34,8 +34,14 @@ def registro_view(request):
         if form.is_valid():
             usuario = form.save()
 
-            messages.success(request, 'Tu cuenta ha sido creada con éxito.')
-            return redirect('login')  # NO login automático
+            # 🔹 Mensaje SOLO para registro
+            messages.success(
+                request,
+                'Tu cuenta ha sido creada con éxito. ✨',
+                extra_tags="registro"
+            )
+
+            return redirect('login')  
         else:
             print("Errores del formulario:", form.errors)
     else:
@@ -55,19 +61,15 @@ def biblioteca(request):
     if query:
         libros = libros.filter(
             Q(titulo__icontains=query) |
-            Q(autor__icontains=query) |
-            Q(categoria__nombre__icontains=query)
-        ).distinct()
+            Q(autor__icontains=query)
+        )
 
     return render(request, 'biblioteca/biblioteca.html', {
         'libros': libros,
         'query': query,
     })
-
-
 # ------------------------
 # AGREGAR LIBRO LEÍDO
-# ------------------------
 @login_required
 def agregar_libro_leido(request):
     if request.method == 'POST':
@@ -77,13 +79,18 @@ def agregar_libro_leido(request):
             libro.usuario = request.user
             libro.save()
             form.save_m2m()
-            messages.success(request, '¡Libro registrado exitosamente en tu biblioteca! 📚')
+
+            messages.success(
+                request,
+                '¡Libro registrado exitosamente en tu biblioteca!',
+                extra_tags="biblioteca"
+            )
+
             return redirect('biblioteca')
     else:
         form = LibroLeidoForm()
 
     return render(request, 'biblioteca/agregar_libro_leido.html', {'form': form})
-
 
 # ------------------------
 # VER DETALLE LIBRO
@@ -105,7 +112,13 @@ def editar_libro(request, pk):
         form = LibroLeidoForm(request.POST, request.FILES, instance=libro_leido)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Libro actualizado correctamente. ✨')
+
+            messages.success(
+                request,
+                'Libro actualizado correctamente.',
+                extra_tags="biblioteca"
+            )
+
             return redirect('biblioteca')
     else:
         form = LibroLeidoForm(instance=libro_leido)
@@ -121,7 +134,13 @@ def eliminar_libro(request, pk):
 
     if request.method == 'POST':
         libro.delete()
-        messages.success(request, 'Libro eliminado de tu biblioteca.')
+
+        messages.success(
+            request,
+            'Libro eliminado de tu biblioteca.',
+            extra_tags="biblioteca"
+        )
+
         return redirect('biblioteca')
 
     return render(request, 'biblioteca/eliminar_libro.html', {'libro': libro})
@@ -161,7 +180,13 @@ def agregar_entrada(request):
             entrada = form.save(commit=False)
             entrada.usuario = request.user
             entrada.save()
-            messages.success(request, 'Entrada agregada al diario lector. 📝')
+
+            messages.success(
+                request,
+                'Entrada agregada al diario lector',
+                extra_tags="diario"
+            )
+
             return redirect('diario_lector')
     else:
         form = DiarioLectorForm(initial={'libro_leido': libro_id}, usuario=request.user)
@@ -180,7 +205,13 @@ def editar_entrada(request, pk):
         form = DiarioLectorForm(request.POST, instance=entrada, usuario=request.user)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Entrada actualizada correctamente.')
+
+            messages.success(
+                request,
+                'Entrada actualizada correctamente.',
+                extra_tags="diario"
+            )
+
             return redirect('diario_lector')
     else:
         form = DiarioLectorForm(instance=entrada, usuario=request.user)
@@ -189,7 +220,6 @@ def editar_entrada(request, pk):
         'form': form,
         'entrada': entrada,
     })
-
 
 # ------------------------
 # ELIMINAR ENTRADA DIARIO
@@ -200,7 +230,13 @@ def eliminar_entrada(request, pk):
 
     if request.method == 'POST':
         entrada.delete()
-        messages.success(request, 'Entrada eliminada del diario.')
+
+        messages.success(
+            request,
+            'Entrada eliminada del diario.',
+            extra_tags="diario"
+        )
+
         return redirect('diario_lector')
 
     return render(request, 'biblioteca/eliminar_entrada.html', {'entrada': entrada})
@@ -220,14 +256,16 @@ def recomendaciones(request):
     isbns_usuario = [l.isbn for l in libros_base]
 
     if not isbns_usuario:
+        # No hay suficientes datos para recomendaciones
         return render(request, 'biblioteca/recomendaciones.html', {
             'recomendaciones': [],
             'tiene_base': False,
         })
 
+    # Llamar al recomendador KNN
     recomendaciones = recomendar_para_usuario(isbns_usuario, top_n=30)
 
-    # ISBN ya en biblioteca (cualquier estado)
+    # ISBN ya en biblioteca
     isbns_biblioteca = set(
         LibroLeido.objects.filter(usuario=request.user)
         .exclude(isbn__isnull=True)
@@ -249,11 +287,11 @@ def recomendaciones(request):
         if not isbn:
             continue
 
-        # 1) si ya está en biblioteca, NO lo recomendamos de nuevo
+        # No repetir libros ya en biblioteca
         if isbn in isbns_biblioteca:
             continue
 
-        # 2) marcamos flags para el template
+        # Marca si ya está en pendientes
         r['is_pending'] = isbn in pendientes_isbns
         filtradas.append(r)
 
@@ -261,6 +299,7 @@ def recomendaciones(request):
         'recomendaciones': filtradas,
         'tiene_base': True,
     })
+
 
 # ------------------------
 # MARCAR LIBRO COMO PENDIENTE (desde recomendaciones)
@@ -401,7 +440,48 @@ def pendiente_a_biblioteca(request, pendiente_id):
     # Si alguien entra por GET, lo mandamos de vuelta
     return redirect('pendientes')
 
-    # Confirmación opcional (si quieres una página intermedia)
-    return render(request, 'biblioteca/confirmar_pendiente_a_biblioteca.html', {
-        'pendiente': pendiente
-    })
+# ------------------------
+# MARCAR LIBRO COMO PENDIENTE (desde recomendaciones)   
+
+@require_POST
+@login_required
+def marcar_pendiente(request):
+    isbn = request.POST.get('isbn')
+    titulo = request.POST.get('titulo')
+    autor = request.POST.get('autor', '')
+
+    if not titulo:
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'ok': False, 'error': 'Falta título'}, status=400)
+
+        messages.error(
+            request,
+            'No se pudo agregar el libro a pendientes.',
+            extra_tags="recomendaciones"
+        )
+        return HttpResponseRedirect(reverse('recomendaciones'))
+
+    pendiente, creado = Pendiente.objects.get_or_create(
+        usuario=request.user,
+        isbn=isbn if isbn else None,
+        titulo=titulo,
+        defaults={'autor': autor}
+    )
+
+    if creado:
+        messages.success(
+            request,
+            f'"{titulo}" fue agregado a tu lista de Pendientes.',
+            extra_tags="recomendaciones"
+        )
+    else:
+        messages.info(
+            request,
+            f'"{titulo}" ya estaba en tu lista de Pendientes.',
+            extra_tags="recomendaciones"
+        )
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'ok': True})
+
+    return HttpResponseRedirect(reverse('recomendaciones'))

@@ -1,6 +1,3 @@
-<!-- templates/registration/registro.html -->
-{% load static %}
-<!DOCTYPE html>
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
@@ -16,15 +13,48 @@
     <div class="row justify-content-center align-items-center vh-100">
         <div class="col-md-6 col-lg-5">
             <div class="card shadow p-4 rounded-4">
+
+                <!-- TÍTULO -->
                 <div class="text-center mb-4">
                     <h2 class="fw-bold">Crea tu cuenta</h2>
                     <p class="text-muted">Empieza tu viaje entre libros ✨</p>
                 </div>
 
+                <!-- MENSAJES DEL REGISTRO -->
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if "registro" in message.tags %}
+                            <div class="d-flex justify-content-center mb-3">
+
+                                {# ✔ ÉXITO (verde) cuando la cuenta se crea #}
+                                {% if "creada" in message.message|lower or "éxito" in message.message|lower %}
+                                    <div class="alert alert-success alert-dismissible fade show rounded-pill shadow-sm px-4"
+                                         role="alert"
+                                         style="min-width:330px; max-width:600px; font-weight:500;">
+                                        ✨ {{ message }}
+                                        <button type="button" class="btn-close ms-2" data-bs-dismiss="alert"></button>
+                                    </div>
+
+                                {# ERROR (rojo) para cualquier mensaje distinto #}
+                                {% else %}
+                                    <div class="alert alert-danger alert-dismissible fade show rounded-pill shadow-sm px-4"
+                                         role="alert"
+                                         style="min-width:330px; max-width:600px; font-weight:500;">
+                                        {{ message }}
+                                        <button type="button" class="btn-close ms-2" data-bs-dismiss="alert"></button>
+                                    </div>
+                                {% endif %}
+
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                <!-- FORMULARIO -->
                 <form method="POST">
                     {% csrf_token %}
 
-                    {# Errores generales (ej: contraseñas no coinciden o débiles) #}
+                    {# Errores generales del formulario #}
                     {% if form.non_field_errors %}
                         <div class="alert alert-danger rounded-3">
                             <ul class="mb-0">
@@ -35,12 +65,12 @@
                         </div>
                     {% endif %}
 
+                    {# Campos del formulario #}
                     {% for field in form %}
                         <div class="mb-3">
                             {{ field.label_tag }}
                             {{ field }}
 
-                            {# Errores específicos de cada campo #}
                             {% if field.errors %}
                                 <div class="text-danger small">{{ field.errors|striptags }}</div>
                             {% endif %}
@@ -53,18 +83,23 @@
                     {% endfor %}
 
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-outline-success rounded-pill">Registrarse</button>
+                        <button type="submit" class="btn btn-outline-success rounded-pill">
+                            Registrarse
+                        </button>
                     </div>
                 </form>
 
+                <!-- LINK LOGIN -->
                 <div class="text-center mt-3 small">
-                    ¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión</a><br>
+                    ¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión</a>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
 
+<!-- SCRIPT DE SEGURIDAD DE CONTRASEÑA -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const passwordInput = document.getElementById("id_password1");
@@ -101,6 +136,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
