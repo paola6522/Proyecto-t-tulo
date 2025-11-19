@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-9+x$*1mn&x#g4aibh)2yw1&@2_a4$cg=h8=*vs8)hdh-q51bwa'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*",]
 
@@ -143,6 +143,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'paola.uribe.rios.2003@gmail.com'
 EMAIL_HOST_PASSWORD = 'pyhv mydz yhjz trii'
+DEFAULT_FROM_EMAIL = "Mi Rincón de Letras y Té <paola.uribe.rios.2003@gmail.com>"
 
 LANGUAGE_CODE = 'es'
 USE_I18N = True
