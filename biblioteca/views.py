@@ -80,16 +80,14 @@ def agregar_libro_leido(request):
             libro.save()
             form.save_m2m()
 
-            # 👇 DEBUG: revisar si el PDF realmente se guardó en el servidor
+            # DEBUG: ver qué URL genera Cloudinary
             if libro.pdf:
                 try:
-                    print("PDF NAME:", libro.pdf.name)
-                    print("PDF PATH:", libro.pdf.path)
-                    print("EXISTS?:", os.path.exists(libro.pdf.path))
+                    print("URL DEL PDF:", libro.pdf.url)
                 except Exception as e:
-                    print("ERROR AL ACCEDER AL PDF:", e)
+                    print("ERROR OBTENIENDO URL DEL PDF:", e)
             else:
-                print("Este libro no tiene PDF adjunto.")
+                print("Libro guardado sin PDF.")
 
             messages.success(
                 request,
