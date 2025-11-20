@@ -71,20 +71,24 @@
                 <label class="form-label fw-semibold" style="color:#6a4e42;">
                     Puntuación
                 </label>
-                <div id="rating-stars" class="d-flex gap-2 justify-content-center mb-2 fs-3">
-                    {% for i in "12345" %}
-                        <i class="bi bi-star-fill star
-                            {% if form.puntuacion.value >= forloop.counter %}
-                                selected
-                            {% endif %}"
-                            data-value="{{ forloop.counter }}"
-                            style="cursor:pointer; color:#c0a79b;"></i>
-                    {% endfor %}
-                </div>
+
+                {% with puntuacion=form.puntuacion.value|add:"0" %}
+                    <div id="rating-stars" class="d-flex gap-2 justify-content-center mb-2 fs-3">
+                        {% for i in "12345" %}
+                            <i class="bi bi-star-fill star 
+                                {% if forloop.counter <= puntuacion %}
+                                    selected
+                                {% endif %}"
+                                data-value="{{ forloop.counter }}">
+                            </i>
+                        {% endfor %}
+                    </div>
+                {% endwith %}
 
                 <input type="hidden" name="puntuacion" id="id_puntuacion"
-                       value="{{ form.puntuacion.value|default:0 }}">
+                    value="{{ form.puntuacion.value|default:0 }}">
             </div>
+
 
             <!-- Botones -->
             <div class="text-center mt-4 d-flex justify-content-center gap-3">
