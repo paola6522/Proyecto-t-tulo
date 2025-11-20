@@ -40,8 +40,16 @@ INSTALLED_APPS = [
     'biblioteca',  # mi app
     'widget_tweaks',
     'django_extensions',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dpwzm6e3w',
+    'API_KEY': '736134723259348',
+    'API_SECRET': 'pnj5FjfEZZrIFx_NIjJhPnpkzV0',
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
