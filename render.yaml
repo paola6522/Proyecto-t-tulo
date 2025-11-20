@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: mi-rincon-letras
+    env: python
+    region: oregon
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn letrasproject.wsgi:application"
+    preDeployCommand: "python manage.py migrate && python manage.py createsuperuser --noinput || true"
+    autoDeploy: true
+    envVars:
+      PYTHON_VERSION: 3.10
