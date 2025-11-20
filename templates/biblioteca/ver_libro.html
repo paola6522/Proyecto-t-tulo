@@ -50,6 +50,9 @@
                     <a href="{{ libro.pdf.url }}" target="_blank" class="btn btn-outline-secondary rounded-pill px-4 py-2">
                         Abrir en nueva pestaña
                     </a>
+                {% else %}
+                    <p>No hay PDF asociado a este libro.</p>
+                {% endif %}
                 </p>
             </div>
         {% elif libro.link %}
