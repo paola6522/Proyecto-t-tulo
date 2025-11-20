@@ -4,8 +4,6 @@ from django.contrib.auth.views import LogoutView # Vista genérica de Django par
 from .views import registro_view # Importación explícita de la vista personalizada de registro
 from django.contrib.auth import views as auth_views # Alias para usar vistas de autenticación
 from .forms import EmailOrUsernameLoginForm # Formulario personalizado para login con email o username
-from django.conf import settings
-from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.inicio, name='inicio'), # Página de inicio
@@ -33,5 +31,3 @@ urlpatterns = [
     path('estadisticas/', views.estadisticas, name='estadisticas'), # Página de estadísticas de lectura (gráficos, totales, etc.)
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
