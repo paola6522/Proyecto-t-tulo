@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-9+x$*1mn&x#g4aibh)2yw1&@2_a4$cg=h8=*vs8)hdh-q51bwa
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["*",]
+ALLOWED_HOSTS = ["proyecto-t-tulo.onrender.com", "localhost", "127.0.0.1",]
 
 
 # Application definition
@@ -44,12 +44,15 @@ INSTALLED_APPS = [
     'cloudinary_storage',
 ]
 
+# Configuración de Cloudinary
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dpwzm6e3w',
-    'API_KEY': '736134723259348',
-    'API_SECRET': 'pnj5FjfEZZrIFx_NIjJhPnpkzV0',
+    'CLOUD_NAME': os.environ.get('dpwzm6e3w'),
+    'API_KEY': os.environ.get('736134723259348'),
+    'API_SECRET': os.environ.get('pnj5FjfEZZrIFx_NIjJhPnpkzV0'),
 }
+
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -123,23 +126,23 @@ USE_I18N = True
 
 USE_TZ = True
 
+LANGUAGE_CODE = 'es'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-#MEDIA_URL = '/media/'
-#MEDIA_ROOT = BASE_DIR / 'media'
+# MEDIA_URL / MEDIA_ROOT ya no son necesarios con Cloudinary
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = BASE_DIR / 'media'
+
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'inicio'
@@ -154,7 +157,7 @@ EMAIL_HOST_USER = 'paola.uribe.rios.2003@gmail.com'
 EMAIL_HOST_PASSWORD = 'pyhv mydz yhjz trii'
 DEFAULT_FROM_EMAIL = "Mi Rincón de Letras y Té <paola.uribe.rios.2003@gmail.com>"
 
-LANGUAGE_CODE = 'es'
+
 USE_I18N = True
 
 AUTHENTICATION_BACKENDS = [
@@ -162,23 +165,10 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",        # backend por defecto
 ]
 
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
-MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # para archivos estáticos en producción
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-]
-
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-ALLOWED_HOSTS = ["proyecto-t-tulo.onrender.com", "localhost", "127.0.0.1"]
+
 
 
 
