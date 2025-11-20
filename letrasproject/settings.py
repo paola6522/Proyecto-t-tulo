@@ -43,8 +43,19 @@ INSTALLED_APPS = [
     'cloudinary',
     'cloudinary_storage',
 ]
+# Cloudinary
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
-# Configuración de Cloudinary
+cloudinary.config(
+    cloud_name = os.environ.get("dpwzm6e3w"),
+    api_key = os.environ.get("736134723259348"),
+    api_secret = os.environ.get("pnj5FjfEZZrIFx_NIjJhPnpkzV0"),
+    secure = True
+)
+
+#Configuración de Cloudinary
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('dpwzm6e3w'),
     'API_KEY': os.environ.get('736134723259348'),
@@ -136,8 +147,8 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # MEDIA_URL / MEDIA_ROOT ya no son necesarios con Cloudinary
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -157,8 +168,6 @@ EMAIL_HOST_USER = 'paola.uribe.rios.2003@gmail.com'
 EMAIL_HOST_PASSWORD = 'pyhv mydz yhjz trii'
 DEFAULT_FROM_EMAIL = "Mi Rincón de Letras y Té <paola.uribe.rios.2003@gmail.com>"
 
-
-USE_I18N = True
 
 AUTHENTICATION_BACKENDS = [
     "biblioteca.backends.EmailOrUsernameModelBackend",  # nuestro backend
