@@ -14,7 +14,7 @@ from collections import defaultdict
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 import json
-
+import os
 # Import del recomendador KNN item-item
 from .recomendaciones import recomendar_para_usuario
 
@@ -80,6 +80,17 @@ def agregar_libro_leido(request):
             libro.save()
             form.save_m2m()
 
+            # 👇 DEBUG: revisar si el PDF realmente se guardó en el servidor
+            if libro.pdf:
+                try:
+                    print("PDF NAME:", libro.pdf.name)
+                    print("PDF PATH:", libro.pdf.path)
+                    print("EXISTS?:", os.path.exists(libro.pdf.path))
+                except Exception as e:
+                    print("ERROR AL ACCEDER AL PDF:", e)
+            else:
+                print("Este libro no tiene PDF adjunto.")
+
             messages.success(
                 request,
                 '¡Libro registrado exitosamente en tu biblioteca!',
@@ -91,6 +102,7 @@ def agregar_libro_leido(request):
         form = LibroLeidoForm()
 
     return render(request, 'biblioteca/agregar_libro_leido.html', {'form': form})
+
 
 # ------------------------
 # VER DETALLE LIBRO
