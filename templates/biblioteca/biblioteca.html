@@ -15,7 +15,7 @@
   {% for message in messages %}
     <div class="d-flex justify-content-center">
       {# Si el texto contiene "eliminado" => rojo #}
-      {% if 'eliminado' in message.message|lower %}
+      {% if "eliminado" in message|lower %}
         <div class="alert alert-danger alert-dismissible fade show rounded-pill shadow-sm px-4"
              role="alert"
              style="min-width:320px; max-width:600px; font-weight:500;">
