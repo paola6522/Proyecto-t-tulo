@@ -45,32 +45,26 @@ INSTALLED_APPS = [
 ]
 # Cloudinary
 import cloudinary
-import cloudinary.uploader
-import cloudinary.api
+import cloudinary_storage
 
-CLOUDINARY_CLOUD_NAME = os.environ.get("dpwzm6e3w")
-CLOUDINARY_API_KEY = os.environ.get("736134723259348")
-CLOUDINARY_API_SECRET = os.environ.get("pnj5FjfEZZrIFx_NIjJhPnpkzV0")
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    "API_KEY": os.environ.get("CLOUDINARY_API_KEY"),
+    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET"),
+}
 
 cloudinary.config(
-    cloud_name="dpwzm6e3w",
-    api_key="736134723259348",
-    api_secret="pnj5FjfEZZrIFx_NIjJhPnpkzV0",
+    cloud_name=CLOUDINARY_STORAGE["CLOUD_NAME"],
+    api_key=CLOUDINARY_STORAGE["API_KEY"],
+    api_secret=CLOUDINARY_STORAGE["API_SECRET"],
     secure=True
 )
 
-#Configuración de Cloudinary
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': "dpwzm6e3w",
-    'API_KEY': "736134723259348",
-    'API_SECRET': "pnj5FjfEZZrIFx_NIjJhPnpkzV0",
-}
-
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -135,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Santiago'
 
 USE_I18N = True
 
