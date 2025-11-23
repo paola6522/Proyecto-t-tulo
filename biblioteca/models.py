@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator, FileExtensionValidator
 from django.core.exceptions import ValidationError
-
+from .storage import RawMediaCloudinaryStorage
 # Lista de opciones de estado
 ESTADO_LIBRO = [
     ('pendiente', 'Pendiente'),
@@ -85,6 +85,7 @@ class LibroLeido(models.Model):
         upload_to='libros/',
         null=True,
         blank=True,
+        storage=RawMediaCloudinaryStorage(),   # 🔥 CLAVE: se sube como RAW
         validators=[
             FileExtensionValidator(allowed_extensions=['pdf']),
             validar_pdf
