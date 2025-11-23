@@ -2,27 +2,58 @@ import joblib
 import pandas as pd
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+# Carpeta donde está este archivo: biblioteca/
+APP_DIR = Path(__file__).resolve().parent
+ML_DIR = APP_DIR / "ml"
 
-MODEL_PATH = BASE_DIR / 'modelo_recomendador_knn.pkl'
-MAPEOS_PATH = BASE_DIR / 'mapeos.pkl'
-BOOK_META_PATH = BASE_DIR / 'book_meta.pkl'
-PIVOT_PATH = BASE_DIR / 'pivot_centered.pkl'
+MODEL_PATH = ML_DIR / "modelo_recomendador_knn.pkl"
+MAPEOS_PATH = ML_DIR / "mapeos.pkl"
+BOOK_META_PATH = ML_DIR / "book_meta.pkl"
+PIVOT_PATH = ML_DIR / "pivot_centered.pkl"
 
-# Carga modelo y artefactos
-model_knn = joblib.load(MODEL_PATH)
 
-mapeos = joblib.load(MAPEOS_PATH)
-isbn_index = mapeos['isbn_index']
-index_isbn = mapeos['index_isbn']
+# ---------------------------
+# CARGA PEREZOSA (lazy load)
+# ---------------------------
+_model_knn = None
+_isbn_index = None
+_index_isbn = None
+_book_meta = None
+_pivot = None
 
-book_meta = pd.read_pickle(BOOK_META_PATH)
 
-#CLAVE: rellenar NaN acá
-pivot = pd.read_pickle(PIVOT_PATH).fillna(0)
+def _load_artifacts():
+    """
+    Carga modelo y artefactos solo cuando se necesiten.
+    Así migrate/collectstatic no explotan en Render.
+    """
+    global _model_knn, _isbn_index, _index_isbn, _book_meta, _pivot
+
+    if _model_knn is None:
+        _model_knn = joblib.load(MODEL_PATH)
+
+    if _isbn_index is None or _index_isbn is None:
+        mapeos = joblib.load(MAPEOS_PATH)
+        _isbn_index = mapeos["isbn_index"]
+        _index_isbn = mapeos["index_isbn"]
+
+    if _book_meta is None:
+        _book_meta = pd.read_pickle(BOOK_META_PATH)
+
+    if _pivot is None:
+        _pivot = pd.read_pickle(PIVOT_PATH).fillna(0)
 
 
 def recomendar_para_usuario(isbns_usuario, top_n=12, vecinos=30):
+    _load_artifacts()
+
+    # usar variables ya cargadas
+    model_knn = _model_knn
+    isbn_index = _isbn_index
+    index_isbn = _index_isbn
+    book_meta = _book_meta
+    pivot = _pivot
+
     # Quitar duplicados
     isbns_usuario = list(dict.fromkeys(isbns_usuario))
 
