@@ -43,20 +43,18 @@
         <!-- PDF -->
         {% if libro.pdf %}
             <div class="mb-3">
-                <h5>📄 Vista previa del PDF</h5>
+                <h5 class="mb-3">📄 Vista previa del PDF</h5>
 
                 <iframe 
                     src="{{ libro.pdf.url }}" 
                     width="100%" 
                     height="500px" 
-                    style="border: 1px solid #ccc;"
+                    style="border: 1px solid #ccc; border-radius: 10px;"
                 ></iframe>
-
-                <p class="text-muted small mt-2">DEBUG URL: {{ libro.pdf.url }}</p>
 
                 <a href="{{ libro.pdf.url }}" 
                    target="_blank" 
-                   class="btn btn-outline-secondary rounded-pill px-4 py-2">
+                   class="btn btn-outline-secondary rounded-pill px-4 py-2 mt-3">
                     Abrir en nueva pestaña
                 </a>
             </div>
@@ -65,8 +63,10 @@
         {% elif libro.link %}
             <div class="mb-3">
                 <h5>🔗 Estás leyendo desde:</h5>
-                <a href="{{ libro.link }}" target="_blank" class="btn btn-outline-primary">
-                    {{ libro.link }}
+                <a href="{{ libro.link }}" 
+                   target="_blank" 
+                   class="btn btn-outline-primary rounded-pill px-4 py-2">
+                    Ir al enlace
                 </a>
             </div>
 
@@ -75,7 +75,7 @@
         {% endif %}
 
         <!-- Botones -->
-        <div class="text-center mt-4">
+        <div class="text-center mt-4 d-flex justify-content-center gap-3 flex-wrap">
             <a href="{% url 'agregar_diario' %}?libro_id={{ libro.id }}" 
                class="btn btn-outline-primary rounded-pill px-4 py-2">
                 Agregar al diario lector
@@ -92,5 +92,6 @@
 
 </body>
 </html>
+
 
 
