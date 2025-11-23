@@ -27,8 +27,8 @@ class Command(BaseCommand):
         # Busca libros con pdf asignado
         libros = LibroLeido.objects.exclude(pdf="").exclude(pdf=None)
 
-        self.stdout.write(self.style.NOTICE(f"📚 Libros con PDF en BD: {libros.count()}"))
-        self.stdout.write(self.style.NOTICE(f"📁 MEDIA_ROOT local: {media_root}"))
+        self.stdout.write(self.style.NOTICE(f"Libros con PDF en BD: {libros.count()}"))
+        self.stdout.write(self.style.NOTICE(f"MEDIA_ROOT local: {media_root}"))
 
         for libro in libros:
             total += 1
@@ -40,11 +40,11 @@ class Command(BaseCommand):
             if not local_path.exists():
                 faltantes += 1
                 self.stdout.write(self.style.WARNING(
-                    f"❌ No existe en disco: {local_path} (Libro ID {libro.id})"
+                    f"No existe en disco: {local_path} (Libro ID {libro.id})"
                 ))
                 continue
 
-            self.stdout.write(f"✅ Encontrado: {local_path} (Libro ID {libro.id})")
+            self.stdout.write(f"Encontrado: {local_path} (Libro ID {libro.id})")
 
             if dry_run:
                 continue
@@ -55,7 +55,7 @@ class Command(BaseCommand):
 
             subidos += 1
             self.stdout.write(self.style.SUCCESS(
-                f"☁️ Subido a Cloudinary y actualizado: Libro ID {libro.id}"
+                f"Subido a Cloudinary y actualizado: Libro ID {libro.id}"
             ))
 
         self.stdout.write(self.style.NOTICE("\n--- RESUMEN ---"))
