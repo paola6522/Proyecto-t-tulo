@@ -41,15 +41,16 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'cloudinary',
     'cloudinary_storage',
+    'django_extensions',
 ]
 # Cloudinary
 import cloudinary
 import cloudinary_storage
 
 CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME", ""),
-    "API_KEY": os.environ.get("CLOUDINARY_API_KEY", ""),
-    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET", ""),
+    "CLOUD_NAME": os.environ["CLOUDINARY_CLOUD_NAME"],
+    "API_KEY": os.environ["CLOUDINARY_API_KEY"],
+    "API_SECRET": os.environ["CLOUDINARY_API_SECRET"],
     "RESOURCE_TYPE": "raw",
 }
 
@@ -138,9 +139,11 @@ LANGUAGE_CODE = 'es'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+if DEBUG:
+    STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # MEDIA_URL / MEDIA_ROOT ya no son necesarios con Cloudinary
 MEDIA_URL = '/media/'
