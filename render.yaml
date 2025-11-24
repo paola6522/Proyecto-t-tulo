@@ -3,9 +3,10 @@ services:
     name: mi-rincon-letras
     env: python
     region: oregon
-    plan: free
+    pythonVersion: 3.10
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn letrasproject.wsgi:application"
+    preDeployCommand: "python manage.py migrate && python manage.py collectstatic --noinput"
 
     #Esto es clave para que Render no pruebe "/"
     healthCheckPath: /healthz
