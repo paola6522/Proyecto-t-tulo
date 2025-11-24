@@ -1,12 +1,29 @@
-# Carpetas a ignorar
+# Entorno virtual
 env/
+venv/
+
+# Python cache
 __pycache__/
-staticfiles/
 *.pyc
+*.pyo
+*.pyd
+
+# Archivos de logs
 *.log
 
-# NO ignorar nada de la carpeta static
+# Archivos de configuración de IDE
+.vscode/
+.idea/
+
+# Staticfiles generados por collectstatic
+staticfiles/
+
+# NO ignorar carpeta static creada por ti
 !static/
 !static/**
+
+# Permitir archivos ML (PKL, modelos, datasets procesados)
+!biblioteca/ml/
+!biblioteca/ml/*.pkl
 
 
