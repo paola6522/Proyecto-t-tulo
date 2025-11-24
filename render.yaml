@@ -3,9 +3,27 @@ services:
     name: mi-rincon-letras
     env: python
     region: oregon
+    plan: free
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn letrasproject.wsgi:application"
-    preDeployCommand: "python manage.py migrate && python manage.py createsuperuser --noinput || true"
+
+    #Esto es clave para que Render no pruebe "/"
+    healthCheckPath: /healthz
+
+    #Predeploy típico: migrar + collectstatic
+    preDeployCommand: "python manage.py migrate && python manage.py collectstatic --noinput"
+
     autoDeploy: true
+
     envVars:
-      PYTHON_VERSION: 3.10
+      - key: PYTHON_VERSION
+        value: "3.10"
+      # (acá puedes agregar las otras env vars si quieres dejarlas también en yaml)
+      # - key: CLOUDINARY_CLOUD_NAME
+      #   value: dpwzm6e3w
+      # - key: CLOUDINARY_API_KEY
+      #   value: "736134723259348"
+      # - key: CLOUDINARY_API_SECRET
+      #   value: "xxxxx"
+      # - key: DATABASE_URL
+      #   value: "postgres://...."
