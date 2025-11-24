@@ -6,6 +6,7 @@ from django.contrib.auth import views as auth_views # Alias para usar vistas de 
 from .forms import EmailOrUsernameLoginForm # Formulario personalizado para login con email o username
 
 urlpatterns = [
+    path("healthz/", views.healthz, name="healthz"),
     path('', views.inicio, name='inicio'), # Página de inicio
     path('biblioteca/', views.biblioteca, name='biblioteca'), # Biblioteca personal del usuario (libros leídos)
     path('diario/', views.diario_lector, name='diario_lector'), # Diario lector (notas, frases y reflexiones personales)
