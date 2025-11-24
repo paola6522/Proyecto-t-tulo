@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Count, Q
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 
@@ -14,20 +13,17 @@ from collections import defaultdict
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 import json
-import os
-# Import del recomendador KNN item-item
+
 from .recomendaciones import recomendar_para_usuario
 
-# ------------------------
+def healthz(request):
+    return HttpResponse("ok", status=200)
+
 # INICIO
-# ------------------------
 def inicio(request):
     return render(request, 'inicio.html')
 
-
-# ------------------------
 # REGISTRO DE USUARIO
-# ------------------------
 def registro_view(request):
     if request.method == 'POST':
         form = RegistroUsuarioForm(request.POST)
@@ -315,7 +311,6 @@ def recomendaciones(request):
 # MARCAR LIBRO COMO PENDIENTE (desde recomendaciones)
 # ------------------------
 from django.views.decorators.http import require_POST
-
 @require_POST
 @login_required
 def marcar_pendiente(request):
@@ -450,9 +445,7 @@ def pendiente_a_biblioteca(request, pendiente_id):
     # Si alguien entra por GET, lo mandamos de vuelta
     return redirect('pendientes')
 
-# ------------------------
 # MARCAR LIBRO COMO PENDIENTE (desde recomendaciones)   
-
 @require_POST
 @login_required
 def marcar_pendiente(request):
