@@ -306,46 +306,7 @@ def recomendaciones(request):
         'tiene_base': True,
     })
 
-
-# ------------------------
-# MARCAR LIBRO COMO PENDIENTE (desde recomendaciones)
-# ------------------------
-from django.views.decorators.http import require_POST
-@require_POST
-@login_required
-def marcar_pendiente(request):
-    isbn = request.POST.get('isbn')
-    titulo = request.POST.get('titulo')
-    autor = request.POST.get('autor', '')
-
-    if not titulo:
-        # Si viene por AJAX y falta info
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'ok': False, 'error': 'Falta título'}, status=400)
-        messages.error(request, 'No se pudo agregar el libro a pendientes.')
-        return HttpResponseRedirect(reverse('recomendaciones'))
-
-    pendiente, creado = Pendiente.objects.get_or_create(
-        usuario=request.user,
-        isbn=isbn if isbn else None,
-        titulo=titulo,
-        defaults={'autor': autor}
-    )
-
-    if creado:
-        messages.success(request, f'"{titulo}" fue agregado a tu lista de Pendientes. ✨')
-    else:
-        messages.info(request, f'"{titulo}" ya estaba en tu lista de Pendientes.')
-
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        return JsonResponse({'ok': True})
-
-    return HttpResponseRedirect(reverse('recomendaciones'))
-
-
-# ------------------------
 # ESTADÍSTICAS
-# ------------------------
 @login_required
 def estadisticas(request):
     usuario = request.user
