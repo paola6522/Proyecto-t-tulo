@@ -3,15 +3,14 @@ services:
     name: mi-rincon-letras
     env: python
     region: oregon
+
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn letrasproject.wsgi:application"
-    preDeployCommand: "python manage.py migrate && python manage.py collectstatic --noinput"
-    autoDeploy: true
 
-    #Esto es clave para que Render no pruebe "/"
+    # HEALTH CHECK para que no revise "/"
     healthCheckPath: /healthz
 
-    #Predeploy típico: migrar + collectstatic
+    # Solo UNA vez
     preDeployCommand: "python manage.py migrate && python manage.py collectstatic --noinput"
 
     autoDeploy: true
@@ -19,7 +18,7 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.6"
-      # (acá puedes agregar las otras env vars si quieres dejarlas también en yaml)
+      # Aquí puedes agregar tus variables si quieres dejarlas fijas en YAML:
       # - key: CLOUDINARY_CLOUD_NAME
       #   value: dpwzm6e3w
       # - key: CLOUDINARY_API_KEY
@@ -28,3 +27,4 @@ services:
       #   value: "xxxxx"
       # - key: DATABASE_URL
       #   value: "postgres://...."
+
