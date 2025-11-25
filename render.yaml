@@ -7,31 +7,18 @@ services:
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn letrasproject.wsgi:application"
 
-    # HEALTH CHECK para que no revise "/"
     healthCheckPath: /healthz
 
-    # Se ejecuta antes de desplegar
     preDeployCommand: |
       python manage.py migrate
       python manage.py collectstatic --noinput
-      python manage.py createsuperuser \
-        --noinput \
-        --username $DJANGO_SUPERUSER_USERNAME \
-        --email $DJANGO_SUPERUSER_EMAIL || true
+      python manage.py shell -c "from django.contrib.auth import get_user_model; import os; User = get_user_model(); username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'admin'); password = os.environ.get('DJANGO_SUPERUSER_PASSWORD', 'admin123'); email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'admin@example.com'); user, created = User.objects.update_or_create(username=username, defaults={'email': email, 'is_staff': True, 'is_superuser': True}); user.set_password(password); user.save(); print('Superusuario listo:', username)"
 
     autoDeploy: true
 
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.6"
-      # Puedes dejar el resto de vars aquí o crearlas desde el panel de Render
-      # - key: CLOUDINARY_CLOUD_NAME
-      #   value: dpwzm6e3w
-      # - key: CLOUDINARY_API_KEY
-      #   value: "736134723259348"
-      # - key: CLOUDINARY_API_SECRET
-      #   value: "xxxxx"
-      # - key: DATABASE_URL
-      #   value: "postgres://...."
+      # aquí puedes tener el resto de variables…
 
 
