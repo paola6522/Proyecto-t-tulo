@@ -22,13 +22,13 @@ staticfiles/
 !static/
 !static/**
 
-# Permitir carpeta ML pero ignorar archivos pesados
-biblioteca/ml/
-!biblioteca/ml/          # permite la carpeta
-biblioteca/ml/*.csv      # ignora datasets grandes
+# Permitir carpeta ML completa
+!biblioteca/ml/
+!biblioteca/ml/*.pkl
+!biblioteca/ml/*.joblib
 
-# Ignorar TODOS los .pkl y .joblib del proyecto
-
+# Pero NO permitir datasets gigantes
+biblioteca/ml/*.csv
 
 # Archivos que jamás deben subirse
 *.sqlite3

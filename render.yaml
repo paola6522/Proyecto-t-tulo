@@ -10,15 +10,21 @@ services:
     # HEALTH CHECK para que no revise "/"
     healthCheckPath: /healthz
 
-    # Solo UNA vez
-    preDeployCommand: "python manage.py migrate && python manage.py collectstatic --noinput"
+    # Se ejecuta antes de desplegar
+    preDeployCommand: |
+      python manage.py migrate
+      python manage.py collectstatic --noinput
+      python manage.py createsuperuser \
+        --noinput \
+        --username $DJANGO_SUPERUSER_USERNAME \
+        --email $DJANGO_SUPERUSER_EMAIL || true
 
     autoDeploy: true
 
     envVars:
       - key: PYTHON_VERSION
         value: "3.11.6"
-      # Aquí puedes agregar tus variables si quieres dejarlas fijas en YAML:
+      # Puedes dejar el resto de vars aquí o crearlas desde el panel de Render
       # - key: CLOUDINARY_CLOUD_NAME
       #   value: dpwzm6e3w
       # - key: CLOUDINARY_API_KEY
@@ -27,4 +33,5 @@ services:
       #   value: "xxxxx"
       # - key: DATABASE_URL
       #   value: "postgres://...."
+
 
