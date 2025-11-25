@@ -7,61 +7,49 @@ from sklearn.neighbors import NearestNeighbors
 import joblib
 from pathlib import Path
 
-# ------------------------------
+
 # Configurar Django
-# ------------------------------
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "letrasproject.settings")
 django.setup()
 
 from biblioteca.models import LibroLeido, DiarioLector
 
-BASE_DIR = Path(__file__).resolve().parent  # donde está este script
-ML_DIR = BASE_DIR / "biblioteca" / "ml"    # carpeta final para artefactos
+BASE_DIR = Path(__file__).resolve().parent
+ML_DIR = BASE_DIR / "biblioteca" / "ml"
 ML_DIR.mkdir(parents=True, exist_ok=True)
 
-# ------------------------------
-# Rutas de datasets externos
-# ------------------------------
+
+# Rutas de datasets
 BOOKS_CSV = BASE_DIR / "Books.csv"
 BOOKS_ES = BASE_DIR / "Books_espanol.csv"
 RATINGS_CSV = BASE_DIR / "Ratings.csv"
 
-# ------------------------------
-# 1. Cargar datos externos base
-# ------------------------------
+
+# 1. Cargar datos externos
 print("Cargando datasets externos...")
 
-books = pd.read_csv(
-    BOOKS_CSV, sep=";", encoding="latin-1",
-    on_bad_lines="skip", low_memory=False
-)
-ratings_ext = pd.read_csv(
-    RATINGS_CSV, sep=";", encoding="latin-1",
-    on_bad_lines="skip", low_memory=False
-)
+books = pd.read_csv(BOOKS_CSV, sep=";", encoding="latin-1",
+                    on_bad_lines="skip", low_memory=False)
+ratings_ext = pd.read_csv(RATINGS_CSV, sep=";", encoding="latin-1",
+                          on_bad_lines="skip", low_memory=False)
 
 books = books[["ISBN", "Book-Title", "Book-Author"]].dropna().drop_duplicates("ISBN")
 ratings_ext = ratings_ext[["User-ID", "ISBN", "Book-Rating"]].dropna()
 ratings_ext = ratings_ext[ratings_ext["Book-Rating"] > 0]
 
-# ------------------------------
 # 2. Añadir libros en español
-# ------------------------------
 if BOOKS_ES.exists():
     print("🇪🇸 Añadiendo libros en español...")
     books_es = pd.read_csv(BOOKS_ES, sep=";", encoding="utf-8")
     books = pd.concat([books, books_es], ignore_index=True).drop_duplicates("ISBN")
-    print(f"Total libros (internacional + español): {len(books)}")
-else:
-    print("No se encontró Books_espanol.csv, usando solo dataset internacional.")
 
-# ------------------------------
+
 # 3. Ratings desde la app
-# ------------------------------
 print("Construyendo ratings desde la app...")
+
 rows = []
 
-# Desde DiarioLector (puntuación explícita)
+# Ratings explícitos en Diario
 diarios = (
     DiarioLector.objects
     .select_related("usuario", "libro_leido")
@@ -80,7 +68,7 @@ for d in diarios:
         "Book-Rating": score_1_10,
     })
 
-# Inferir rating según estado
+# Ratings según estado
 estado_a_rating = {
     "pendiente": 0,
     "iniciado": 6,
@@ -103,14 +91,6 @@ for libro in libros_app:
 
     user_id = f"app_{libro.usuario_id}"
 
-    # evitar duplicado si ya hay rating explícito en diario
-    ya_tiene = any(
-        (r["User-ID"] == user_id and r["ISBN"] == isbn)
-        for r in rows
-    )
-    if ya_tiene:
-        continue
-
     r_estado = estado_a_rating.get(libro.estado, 0)
     if r_estado > 0:
         rows.append({
@@ -120,24 +100,16 @@ for libro in libros_app:
         })
 
 ratings_app = pd.DataFrame(rows)
-print(f"Ratings desde la app: {len(ratings_app)}")
 
-# ------------------------------
-# 4. Unir datasets
-# ------------------------------
+
+# 4. Unificar datasets
 ratings = pd.concat([ratings_ext, ratings_app], ignore_index=True)
-ratings = ratings.dropna(subset=["User-ID", "ISBN", "Book-Rating"])
-
-# Solo ratings cuyos ISBN existan en books
+ratings = ratings.dropna()
 df = ratings.merge(books, on="ISBN", how="inner")
-df = (
-    df.dropna(subset=["ISBN", "User-ID", "Book-Rating"])
-      .drop_duplicates(["User-ID", "ISBN"])
-)
+df = df.drop_duplicates(["User-ID", "ISBN"])
 
-# ------------------------------
+
 # 5. Filtrado mínimo
-# ------------------------------
 min_user_r = 20
 min_item_r = 10
 
@@ -152,9 +124,8 @@ if df.empty:
 
 print(f"Usuarios: {df['User-ID'].nunique()} | Libros: {df['ISBN'].nunique()}")
 
-# ------------------------------
-# 6. Matriz centrada por usuario
-# ------------------------------
+
+# 6. Matriz centrada sparse
 user_mean = df.groupby("User-ID")["Book-Rating"].mean()
 df = df.join(user_mean, on="User-ID", rsuffix="_USER_MEAN")
 df["adj_rating"] = df["Book-Rating"] - df["Book-Rating_USER_MEAN"]
@@ -166,11 +137,14 @@ pivot = df.pivot_table(
     aggfunc="mean"
 ).fillna(0)
 
-pivot_sparse = csr_matrix(pivot.values)
+# Reducción real: float32
+pivot = pivot.astype("float32")
 
-# ------------------------------
-# 7. Entrenar modelo KNN
-# ------------------------------
+# Matriz sparse ultraliviana
+pivot_sparse = csr_matrix(pivot.values.astype("float32"))
+
+
+# 7. Entrenar KNN
 print("Entrenando modelo KNN...")
 model_knn = NearestNeighbors(
     metric="cosine",
@@ -180,9 +154,8 @@ model_knn = NearestNeighbors(
 )
 model_knn.fit(pivot_sparse)
 
-# ------------------------------
-# 8. Artefactos finales
-# ------------------------------
+
+# 8. Índices y metadata
 isbn_index = pd.Series(range(pivot.shape[0]), index=pivot.index)
 index_isbn = pd.Series(pivot.index, index=range(pivot.shape[0]))
 
@@ -192,15 +165,19 @@ book_meta = (
     .fillna("Desconocido")
 )
 
-# ------------------------------
-# 9. Guardar TODO con joblib
-# ------------------------------
-joblib.dump(model_knn, ML_DIR / "modelo_recomendador_knn.pkl")
-joblib.dump({"isbn_index": isbn_index, "index_isbn": index_isbn}, ML_DIR / "mapeos.pkl")
-joblib.dump(book_meta, ML_DIR / "book_meta.pkl")
-joblib.dump(pivot, ML_DIR / "pivot_centered.pkl")
 
-print("Modelo actualizado con libros en español y datos de usuarios.")
-print(f"Artefactos guardados en: {ML_DIR}")
+# 9. Guardar artefactos reducidos
+joblib.dump(model_knn, ML_DIR / "modelo_recomendador_knn.pkl", compress=3)
+joblib.dump(
+    {"isbn_index": isbn_index, "index_isbn": index_isbn},
+    ML_DIR / "mapeos.pkl",
+    compress=3
+)
+joblib.dump(book_meta, ML_DIR / "book_meta.pkl", compress=3)
+joblib.dump(pivot, ML_DIR / "pivot_centered.pkl", compress=3)  # ⭐ ahora liviano
+
+print("Modelo regenerado correctamente con reducción de tamaño.")
+print(f"Guardado en: {ML_DIR}")
+
 
 
