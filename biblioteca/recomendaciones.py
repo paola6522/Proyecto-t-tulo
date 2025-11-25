@@ -1,16 +1,17 @@
+# biblioteca/recomendaciones.py
 import joblib
-import pandas as pd
 from pathlib import Path
+from django.conf import settings
 
-# Carpeta donde está este archivo: biblioteca/
-APP_DIR = Path(__file__).resolve().parent
-ML_DIR = APP_DIR / "ml"
+# ---------------------------
+# RUTAS ABSOLUTAS (Render-safe)
+# ---------------------------
+ML_DIR = Path(settings.BASE_DIR) / "biblioteca" / "ml"
 
 MODEL_PATH = ML_DIR / "modelo_recomendador_knn.pkl"
 MAPEOS_PATH = ML_DIR / "mapeos.pkl"
 BOOK_META_PATH = ML_DIR / "book_meta.pkl"
 PIVOT_PATH = ML_DIR / "pivot_centered.pkl"
-
 
 # ---------------------------
 # CARGA PEREZOSA (lazy load)
@@ -25,7 +26,7 @@ _pivot = None
 def _load_artifacts():
     """
     Carga modelo y artefactos solo cuando se necesiten.
-    Así migrate/collectstatic no explotan en Render.
+    Evita que migrate/collectstatic revienten en Render.
     """
     global _model_knn, _isbn_index, _index_isbn, _book_meta, _pivot
 
@@ -34,30 +35,35 @@ def _load_artifacts():
 
     if _isbn_index is None or _index_isbn is None:
         mapeos = joblib.load(MAPEOS_PATH)
-        _isbn_index = mapeos["isbn_index"]
-        _index_isbn = mapeos["index_isbn"]
+        _isbn_index = mapeos["isbn_index"]   # ej: Series isbn -> fila
+        _index_isbn = mapeos["index_isbn"]   # ej: dict fila -> isbn
 
     if _book_meta is None:
-        _book_meta = pd.read_pickle(BOOK_META_PATH)
+        _book_meta = joblib.load(BOOK_META_PATH)  # DataFrame index=ISBN
 
     if _pivot is None:
-        _pivot = pd.read_pickle(PIVOT_PATH).fillna(0)
+        _pivot = joblib.load(PIVOT_PATH)          # DataFrame/array ya centrado
+        # si es DF, aseguramos NaN fuera
+        try:
+            _pivot = _pivot.fillna(0)
+        except AttributeError:
+            pass
 
 
 def recomendar_para_usuario(isbns_usuario, top_n=12, vecinos=30):
     _load_artifacts()
 
-    # usar variables ya cargadas
     model_knn = _model_knn
     isbn_index = _isbn_index
     index_isbn = _index_isbn
     book_meta = _book_meta
     pivot = _pivot
 
-    # Quitar duplicados
+    # quitar duplicados manteniendo orden
     isbns_usuario = list(dict.fromkeys(isbns_usuario))
 
-    # Quedarnos solo con ISBN que existan en el modelo
+    # quedarnos solo con ISBN presentes en el modelo
+    # (si isbn_index es Series, su index son los ISBN válidos)
     base = [i for i in isbns_usuario if i in isbn_index.index]
     if not base:
         return []
@@ -67,7 +73,7 @@ def recomendar_para_usuario(isbns_usuario, top_n=12, vecinos=30):
     for isbn in base:
         fila = int(isbn_index[isbn])
 
-        # Fila segura sin NaN
+        # vector sin NaN
         vector = pivot.iloc[fila, :].values.reshape(1, -1)
 
         n_vecinos = min(vecinos + 1, pivot.shape[0])
@@ -76,7 +82,7 @@ def recomendar_para_usuario(isbns_usuario, top_n=12, vecinos=30):
         for dist, idx_vecino in zip(distances[0], indices[0]):
             vecino_isbn = index_isbn[int(idx_vecino)]
 
-            # Saltar mismo libro y libros ya leídos
+            # saltar mismo libro y libros ya del usuario
             if vecino_isbn == isbn or vecino_isbn in isbns_usuario:
                 continue
 
@@ -103,4 +109,5 @@ def recomendar_para_usuario(isbns_usuario, top_n=12, vecinos=30):
             })
 
     return recomendaciones
+
 
