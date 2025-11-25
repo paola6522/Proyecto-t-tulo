@@ -48,18 +48,26 @@ import cloudinary
 import cloudinary_storage
 
 CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.environ["CLOUDINARY_CLOUD_NAME"],
-    "API_KEY": os.environ["CLOUDINARY_API_KEY"],
-    "API_SECRET": os.environ["CLOUDINARY_API_SECRET"],
+    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME", ""),
+    "API_KEY": os.environ.get("CLOUDINARY_API_KEY", ""),
+    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET", ""),
     "RESOURCE_TYPE": "raw",
 }
 
-cloudinary.config(
-    cloud_name=CLOUDINARY_STORAGE["CLOUD_NAME"],
-    api_key=CLOUDINARY_STORAGE["API_KEY"],
-    api_secret=CLOUDINARY_STORAGE["API_SECRET"],
-    secure=True
-)
+# Configurar Cloudinary solo si existen credenciales
+if (
+    CLOUDINARY_STORAGE["CLOUD_NAME"]
+    and CLOUDINARY_STORAGE["API_KEY"]
+    and CLOUDINARY_STORAGE["API_SECRET"]
+):
+    cloudinary.config(
+        cloud_name=CLOUDINARY_STORAGE["CLOUD_NAME"],
+        api_key=CLOUDINARY_STORAGE["API_KEY"],
+        api_secret=CLOUDINARY_STORAGE["API_SECRET"],
+        secure=True
+    )
+else:
+    print("Cloudinary no configurado (faltan variables de entorno).")
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

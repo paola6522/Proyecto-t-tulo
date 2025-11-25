@@ -8,10 +8,10 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Archivos de logs
+# Logs
 *.log
 
-# Archivos de configuración de IDE
+# Configuración de IDE
 .vscode/
 .idea/
 
@@ -22,8 +22,21 @@ staticfiles/
 !static/
 !static/**
 
-# Permitir archivos ML (PKL, modelos, datasets procesados)
-!biblioteca/ml/
-!biblioteca/ml/*.pkl
+# Permitir carpeta ML pero ignorar archivos pesados
+biblioteca/ml/
+!biblioteca/ml/          # permite la carpeta
+biblioteca/ml/*.pkl      # ignora archivos .pkl
+biblioteca/ml/*.joblib   # ignora archivos .joblib
+biblioteca/ml/*.csv      # ignora datasets grandes
+
+# Ignorar TODOS los .pkl y .joblib del proyecto
+*.pkl
+*.joblib
+
+# Archivos que jamás deben subirse
+*.sqlite3
+*.db
+*.DS_Store
+
 
 
