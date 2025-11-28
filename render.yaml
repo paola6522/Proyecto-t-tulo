@@ -12,13 +12,48 @@ services:
     preDeployCommand: |
       python manage.py migrate
       python manage.py collectstatic --noinput
-      python manage.py shell -c "from django.contrib.auth import get_user_model; import os; User = get_user_model(); username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'admin'); password = os.environ.get('DJANGO_SUPERUSER_PASSWORD', 'admin123'); email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'admin@example.com'); user, created = User.objects.update_or_create(username=username, defaults={'email': email, 'is_staff': True, 'is_superuser': True}); user.set_password(password); user.save(); print('Superusuario listo:', username)"
+      python manage.py shell -c "
+from django.contrib.auth import get_user_model;
+import os;
+User = get_user_model();
+username = os.environ.get('DJANGO_SUPERUSER_USERNAME');
+password = os.environ.get('DJANGO_SUPERUSER_PASSWORD');
+email = os.environ.get('DJANGO_SUPERUSER_EMAIL');
+user, created = User.objects.update_or_create(
+    username=username,
+    defaults={'email': email, 'is_staff': True, 'is_superuser': True}
+);
+user.set_password(password);
+user.save();
+print('Superusuario listo:', username)
+"
 
     autoDeploy: true
 
     envVars:
       - key: PYTHON_VERSION
-        value: "3.11.6"
-      # aquí puedes tener el resto de variables…
+        value: 3.11.6
+
+      - key: DJANGO_SUPERUSER_USERNAME
+        value: Paola_admin
+
+      - key: DJANGO_SUPERUSER_EMAIL
+        value: paola.hola2003ur@gmail.com
+
+      - key: DJANGO_SUPERUSER_PASSWORD
+        value: Admin123
+
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+
+      - key: CLOUDINARY_API_KEY
+        sync: false
+
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+      - key: DATABASE_URL
+        sync: false
+
 
 
