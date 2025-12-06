@@ -1,15 +1,40 @@
 # biblioteca/forms_password.py
+
 import re
 
-from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 
 
+class CustomPasswordResetForm(PasswordResetForm):
+    """
+    Formulario personalizado para 'Olvidé mi contraseña'.
+    Valida que el correo tenga formato correcto.
+    """
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+
+        if not email:
+            raise ValidationError("Debes ingresar un correo electrónico.")
+
+        # Validar formato básico de correo
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            raise ValidationError("El correo no tiene un formato válido.")
+
+        # Si quieres validar que exista en la BD, descomenta esto:
+        # from django.contrib.auth import get_user_model
+        # User = get_user_model()
+        # if not User.objects.filter(email=email).exists():
+        #     raise ValidationError("No existe una cuenta asociada a este correo.")
+
+        return email
+
+
 class CustomSetPasswordForm(SetPasswordForm):
     """
-    Formulario para establecer nueva contraseña 
-    con las MISMAS validaciones que el registro.
+    Formulario para establecer nueva contraseña (después del correo),
+    con las MISMAS validaciones que tu registro.
     """
 
     def clean_new_password1(self):
@@ -47,4 +72,3 @@ class CustomSetPasswordForm(SetPasswordForm):
             raise ValidationError("No puede contener más de 3 caracteres iguales seguidos.")
 
         return password
-
